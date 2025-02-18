@@ -1,4 +1,6 @@
 using KitchEd.Data;
+using KitchEd.Data.Services.Implementations;
+using KitchEd.Data.Services.Interfaces;
 using KitchEd.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +17,17 @@ builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddRazorPages();
+
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<ICourseCategoryService, CourseCategoryService>();
+builder.Services.AddScoped<ICourseImageServie, CourseImageService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<IUserCourseService, UserCourseService>();
+builder.Services.AddScoped<ISkillLevelService, SkillLevelService>();
+builder.Services.AddScoped<IDishTypeService, DishTypeService>();
+
 
 var app = builder.Build();
 
