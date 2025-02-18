@@ -58,7 +58,9 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "admin",
-    pattern: "admin-panel/{controller=AdminPanel}/{action=Index}/{id?}"
+    pattern: "admin-panel/{controller}/{action}/{id?}",
+    defaults: new {action = "Index", controller = "AdminPanel"},
+    constraints: new {controller = "AdminPanel|CourseCategory|DishType|SkillLevel" }
 );
 app.MapControllerRoute(
     name: "default",

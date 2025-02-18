@@ -19,7 +19,6 @@
     <Folder Include="Models\ViewModels\Course\" />
     <Folder Include="Models\ViewModels\CourseImage\" />
     <Folder Include="Models\ViewModels\UserCourse\" />
-    <Folder Include="Models\ViewModels\User\" />
   </ItemGroup>
 
 </Project>
