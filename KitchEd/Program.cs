@@ -17,7 +17,13 @@ builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages().AddRazorOptions(options =>
+{
+    options.ViewLocationFormats.Add("/Views/ClientSide/{1}/{0}.cshtml");
+    options.ViewLocationFormats.Add("/Views/ClientSide/Shared/{0}.cshtml");
+    options.ViewLocationFormats.Add("/Views/AdminPanel/{1}/{0}.cshtml");
+    options.ViewLocationFormats.Add("/Views/AdminPanel/Shared/{0}.cshtml");
+});
 
 builder.Services.AddControllersWithViews();
 
@@ -50,6 +56,10 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.MapControllerRoute(
+    name: "admin",
+    pattern: "admin-panel/{controller=AdminPanel}/{action=Index}/{id?}"
+);
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Admin Panel</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/KitchEd.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h4 class="text-white text-center">Admin Panel</h4>
+        <a class="nav-link" asp-area="" asp-controller="CourseCategory" asp-action="Index">Категории</a>
+        <a class="nav-link" asp-area="" asp-controller="DishType" asp-action="Index">Типове ястия</a>
+        <a class="nav-link" asp-area="" asp-controller="SkillLevel" asp-action="Index">Нива на умения</a>
+        <a href="@Url.Action("Logout", "Account")">Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container mt-4">
+            @RenderBody()
+        </div>
+    </div>
+
+    <script>
+        // Toggle sidebar for small screens
+        document.getElementById("toggleSidebar").addEventListener("click", function() {
+            document.querySelector(".sidebar").classList.toggle("d-none");
+        });
+    </script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

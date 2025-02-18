@@ -1,0 +1,31 @@
+﻿@model SkillLevelViewModel
+
+@{
+    ViewData["Title"] = "Edit Skill Level";
+}
+
+<div class="container mt-4">
+    <h2>Edit Skill Level</h2>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <form asp-action="Edit" method="post" class="mt-3">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="SkillLevelId" />
+
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mt-2">
+            <button type="submit" class="btn btn-primary">Update</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>

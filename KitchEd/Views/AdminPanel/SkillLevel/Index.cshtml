@@ -1,0 +1,51 @@
+﻿@model IEnumerable<SkillLevelViewModel>
+
+@{
+    ViewData["Title"] = "Skill Levels";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Skill Levels</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <a asp-action="Create" class="btn btn-primary mb-3">Create New Skill Level</a>
+
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var skillLevel in Model)
+            {
+                <tr>
+                    <td>@skillLevel.SkillLevelId</td>
+                    <td>@skillLevel.Name</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@skillLevel.SkillLevelId" class="btn btn-warning btn-sm">Edit</a>
+                        <button class="btn btn-danger btn-sm" onclick="confirmDelete(@skillLevel.SkillLevelId)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function confirmDelete(id) {
+        if (confirm("Are you sure you want to delete this skill level?")) {
+            window.location.href = "/SkillLevel/Delete/" + id;
+        }
+    }
+</script>
