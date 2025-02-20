@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KitchEd.Controllers
 {
-    //[Authorize(Roles = "Admin")] 
-    public class CourseCategoryController : Controller
+    [AdminOnly]
+    public class CourseCategoryController : BaseController
     {
         private readonly ICourseCategoryService _courseCategoryService;
 

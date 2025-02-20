@@ -1,8 +1,9 @@
-﻿@using KitchEd.Models.ViewModels.CourseCategory
+@using KitchEd.Models.ViewModels.CourseCategory
 @model IEnumerable<CourseCategoryViewModel>
 
 @{
     ViewData["Title"] = "Категории курсове";
+    Layout = "_AdminLayout";
 }
 
 <div class="admin-content-header">
@@ -10,8 +11,9 @@
         <i class="fas fa-tags me-2"></i>
         Категории курсове
     </h1>
-    <a asp-action="Create" class="btn btn-primary">
-        <i class="fas fa-plus me-2"></i>Добави категория
+    <a asp-area="Admin" asp-action="Create" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>
+        Добави категория
     </a>
 </div>
 
@@ -33,7 +35,7 @@
                         <td>@category.Name</td>
                         <td>
                             <div class="btn-group" role="group">
-                                <a asp-action="Edit" asp-route-id="@category.CourseCategoryId" 
+                                <a asp-area="Admin" asp-action="Edit" asp-route-id="@category.CourseCategoryId" 
                                    class="btn btn-outline-primary btn-sm">
                                     <i class="fas fa-edit me-1"></i>
                                     Редактирай
@@ -65,8 +67,15 @@
                 <p class="text-danger"><small>Това действие не може да бъде отменено.</small></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отказ</button>
-                <a href="#" id="confirmDeleteBtn" class="btn btn-danger">Изтрий</a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Отказ
+                </button>
+                <form id="deleteForm" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt me-2"></i>Изтрий
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -76,8 +85,8 @@
     <script>
         function confirmDelete(id, name) {
             document.getElementById('categoryName').textContent = name;
-            document.getElementById('confirmDeleteBtn').href = `/CourseCategory/Delete/${id}`;
+            document.getElementById('deleteForm').action = `/Admin/CourseCategory/Delete/${id}`;
             new bootstrap.Modal(document.getElementById('deleteModal')).show();
         }
     </script>
-}
+} 

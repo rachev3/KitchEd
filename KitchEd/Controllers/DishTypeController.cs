@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KitchEd.Controllers
 {
-    //[Authorize(Roles = "Admin")] 
-    public class DishTypeController : Controller
+    [AdminOnly]
+    public class DishTypeController : BaseController
     {
         private readonly IDishTypeService _dishTypeService;
 
@@ -38,7 +38,7 @@ namespace KitchEd.Controllers
                 TempData["SuccessMessage"] = "Типът ястие е създаден успешно!";
                 return RedirectToAction("Index");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 TempData["ErrorMessage"] = "Вече съществува такъв тип ястие.";
                 return View(dishTypeVM);

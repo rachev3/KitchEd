@@ -25,6 +25,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options => {
     .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<RoleInitializationService>();
+builder.Services.AddScoped<AdminInitializationService>();
 
 builder.Services.AddAuthorization(options =>
 {
@@ -52,12 +53,23 @@ builder.Services.AddScoped<IDishTypeService, DishTypeService>();
 
 var app = builder.Build();
 
-// Initialize Roles
+// Initialize Roles and Admin
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    var roleInitializer = services.GetRequiredService<RoleInitializationService>();
-    await roleInitializer.InitializeRoles();
+    try
+    {
+        var roleInitializer = services.GetRequiredService<RoleInitializationService>();
+        await roleInitializer.InitializeRoles();
+
+        var adminInitializer = services.GetRequiredService<AdminInitializationService>();
+        await adminInitializer.InitializeAdmin();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while initializing roles and admin user.");
+    }
 }
 
 // Configure the HTTP request pipeline.

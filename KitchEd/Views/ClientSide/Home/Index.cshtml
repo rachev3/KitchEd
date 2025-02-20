@@ -1,8 +1,95 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "KitchEd - Кулинарни курсове";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="hero-section text-center py-5">
+    <div class="container">
+        <h1 class="display-4 mb-4">Добре дошли в KitchEd</h1>
+        <p class="lead mb-4">Вашият път към кулинарното майсторство започва тук</p>
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <div class="mt-4">
+                <a asp-controller="Auth" asp-action="Register" class="btn btn-primary btn-lg mx-2">Регистрация</a>
+                <a asp-controller="Auth" asp-action="Login" class="btn btn-outline-primary btn-lg mx-2">Вход</a>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="features-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Какво предлагаме</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-utensils fa-3x mb-3 text-primary"></i>
+                        <h3 class="card-title">Разнообразни курсове</h3>
+                        <p class="card-text">От основни техники до специализирани кухни - намерете перфектния курс за вас.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-chalkboard-teacher fa-3x mb-3 text-primary"></i>
+                        <h3 class="card-title">Опитни готвачи</h3>
+                        <p class="card-text">Учете се от професионалисти с богат опит в кулинарната индустрия.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-users fa-3x mb-3 text-primary"></i>
+                        <h3 class="card-title">Общност</h3>
+                        <p class="card-text">Присъединете се към общност от ентусиасти и професионалисти в кулинарията.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="user-actions-section py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">Вашето кулинарно пътешествие</h2>
+            <div class="row justify-content-center">
+                @if (User.IsInRole("Student"))
+                {
+                    <div class="col-md-6 text-center">
+                        <h3>Започнете обучението си</h3>
+                        <p>Разгледайте нашите курсове и започнете своето кулинарно приключение.</p>
+                        <a href="/Courses" class="btn btn-primary">Разгледай курсовете</a>
+                    </div>
+                }
+                @if (User.IsInRole("Chef"))
+                {
+                    <div class="col-md-6 text-center">
+                        <h3>Управлявайте вашите курсове</h3>
+                        <p>Създайте нови курсове или управлявайте съществуващите.</p>
+                        <a href="/Courses/Create" class="btn btn-primary">Създай нов курс</a>
+                        <a href="/Courses/My" class="btn btn-outline-primary">Моите курсове</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+<div class="cta-section py-5">
+    <div class="container text-center">
+        <h2 class="mb-4">Готови ли сте да започнете?</h2>
+        <p class="lead mb-4">Присъединете се към нашата общност и развийте своите кулинарни умения.</p>
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <a asp-controller="Auth" asp-action="Register" class="btn btn-primary btn-lg">Започнете сега</a>
+        }
+        else
+        {
+            <a href="/Courses" class="btn btn-primary btn-lg">Разгледай курсовете</a>
+        }
+    </div>
 </div>

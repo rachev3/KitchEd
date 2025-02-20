@@ -1,38 +1,95 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="bg">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - Admin Panel</title>
+    <title>@ViewBag.Title - Админ Панел</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/KitchEd.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
-<body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <h4 class="text-white text-center">Admin Panel</h4>
-        <a class="nav-link text-white" asp-area="" asp-controller="CourseCategory" asp-action="Index">Категории</a>
-        <a class="nav-link text-white" asp-area="" asp-controller="DishType" asp-action="Index">Типове ястия</a>
-        <a class="nav-link text-white" asp-area="" asp-controller="SkillLevel" asp-action="Index">Нива на умения</a>
-        <a href="@Url.Action("Logout", "Account")">Logout</a>
-    </div>
+<body class="admin-body">
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <nav class="admin-sidebar">
+            <div class="sidebar-header">
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="sidebar-brand">
+                    <i class="fas fa-utensils"></i>
+                    <span>KitchEd</span>
+                </a>
+            </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="container mt-4">
-            @RenderBody()
+            <div class="sidebar-menu">
+                <div class="menu-header">Управление на данни</div>
+                <a class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "CourseCategory" ? "active" : "")" 
+                   asp-area="Admin" asp-controller="CourseCategory" asp-action="Index">
+                    <i class="fas fa-tags"></i>
+                    <span>Категории</span>
+                </a>
+                <a class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "DishType" ? "active" : "")" 
+                   asp-area="Admin" asp-controller="DishType" asp-action="Index">
+                    <i class="fas fa-hamburger"></i>
+                    <span>Типове ястия</span>
+                </a>
+                <a class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "SkillLevel" ? "active" : "")" 
+                   asp-area="Admin" asp-controller="SkillLevel" asp-action="Index">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Нива на умения</span>
+                </a>
+
+                <div class="menu-header mt-4">Акаунт</div>
+                <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post" class="logout-form">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="menu-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Изход</span>
+                    </button>
+                </form>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="admin-main">
+            <header class="admin-header">
+                <button class="sidebar-toggle" id="toggleSidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="header-title">@ViewBag.Title</h1>
+            </header>
+
+            <div class="admin-content">
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        @TempData["ErrorMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                @RenderBody()
+            </div>
         </div>
     </div>
 
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Toggle sidebar for small screens
         document.getElementById("toggleSidebar").addEventListener("click", function() {
-            document.querySelector(".sidebar").classList.toggle("d-none");
+            document.body.classList.toggle("sidebar-collapsed");
         });
     </script>
-
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -1,99 +1,114 @@
 ﻿@model KitchEd.Models.ViewModels.Auth.RegisterViewModel
 
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Регистрация - KitchEd";
 }
 
-<div class="container mt-4">
-    <h2 class="mb-3">Регистрация</h2>
+<div class="auth-wrapper">
+    <div class="auth-container register">
+        <div class="auth-box">
+            <div class="text-center mb-4">
+                <h1 class="auth-title">Регистрация</h1>
+                <p class="auth-subtitle">Създайте своя акаунт в KitchEd</p>
+            </div>
 
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-    }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
 
-    <form asp-action="Register" method="post" class="mt-3">
-        @Html.AntiForgeryToken()
+            <form asp-action="Register" method="post" class="auth-form">
+                @Html.AntiForgeryToken()
 
-        <!-- Username -->
-        <div class="form-group">
-            <label asp-for="Username"></label>
-            <input asp-for="Username" class="form-control" placeholder="Въведете потребителско име" />
-            <span asp-validation-for="Username" class="text-danger"></span>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input asp-for="Username" class="form-control" placeholder="Потребителско име" />
+                            <label asp-for="Username"><i class="fas fa-user me-2"></i>Потребителско име</label>
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input asp-for="Email" class="form-control" placeholder="Email" />
+                            <label asp-for="Email"><i class="fas fa-envelope me-2"></i>Email</label>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input asp-for="FirstName" class="form-control" placeholder="Име" />
+                            <label asp-for="FirstName"><i class="fas fa-user-circle me-2"></i>Име</label>
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input asp-for="LastName" class="form-control" placeholder="Фамилия" />
+                            <label asp-for="LastName"><i class="fas fa-user-circle me-2"></i>Фамилия</label>
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <select asp-for="Role" class="form-select">
+                        <option value="@UserRoles.Chef">Готвач</option>
+                        <option value="@UserRoles.Student">Ученик</option>
+                    </select>
+                    <label asp-for="Role"><i class="fas fa-user-tag me-2"></i>Роля</label>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="PhoneNumber" class="form-control" placeholder="Телефон" />
+                    <label asp-for="PhoneNumber"><i class="fas fa-phone me-2"></i>Телефон (по избор)</label>
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <textarea asp-for="ShortBio" class="form-control" placeholder="Кратка биография" style="height: 100px"></textarea>
+                    <label asp-for="ShortBio"><i class="fas fa-book-open me-2"></i>Кратка биография (по избор)</label>
+                    <span asp-validation-for="ShortBio" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input asp-for="Password" type="password" class="form-control" placeholder="Парола" />
+                            <label asp-for="Password"><i class="fas fa-lock me-2"></i>Парола</label>
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Повторете паролата" />
+                            <label asp-for="ConfirmPassword"><i class="fas fa-lock me-2"></i>Повторете паролата</label>
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mb-3">
+                    <i class="fas fa-user-plus me-2"></i>Регистрация
+                </button>
+
+                <div class="text-center">
+                    <p class="mb-0">Вече имате акаунт?</p>
+                    <a asp-action="Login" class="btn btn-link">Влезте тук</a>
+                </div>
+            </form>
         </div>
-
-        <!-- Email -->
-        <div class="form-group">
-            <label asp-for="Email"></label>
-            <input asp-for="Email" class="form-control" placeholder="Въведете email" />
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
-
-        <!-- First Name -->
-        <div class="form-group">
-            <label asp-for="FirstName"></label>
-            <input asp-for="FirstName" class="form-control" placeholder="Въведете име" />
-            <span asp-validation-for="FirstName" class="text-danger"></span>
-        </div>
-
-        <!-- Last Name -->
-        <div class="form-group">
-            <label asp-for="LastName"></label>
-            <input asp-for="LastName" class="form-control" placeholder="Въведете фамилия" />
-            <span asp-validation-for="LastName" class="text-danger"></span>
-        </div>
-
-        <!-- Role Selection -->
-        <div class="form-group">
-            <label asp-for="Role"></label>
-            <select asp-for="Role" class="form-control">
-                <option value="@UserRoles.Chef">@UserRoles.Chef</option>
-                <option value="@UserRoles.Student">@UserRoles.Student</option>
-            </select>
-            <span asp-validation-for="Role" class="text-danger"></span>
-        </div>
-
-        <!-- Phone Number (Optional) -->
-        <div class="form-group">
-            <label asp-for="PhoneNumber"></label>
-            <input asp-for="PhoneNumber" class="form-control" placeholder="Въведете телефонен номер (по избор)" />
-          
-        </div>
-
-        <!-- Short Bio (Optional) -->
-        <div class="form-group">
-            <label asp-for="ShortBio"></label>
-            <textarea asp-for="ShortBio" class="form-control" placeholder="Разкажете малко за себе си... (по избор)"></textarea>
-            <span asp-validation-for="ShortBio" class="text-danger"></span>
-        </div>
-
-        <!-- Password -->
-        <div class="form-group">
-            <label asp-for="Password"></label>
-            <input asp-for="Password" type="password" class="form-control" placeholder="Въведете парола" />
-            <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="form-group">
-            <label asp-for="ConfirmPassword"></label>
-            <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Повторете паролата" />
-            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-        </div>
-
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn-success btn-block">Регистрация</button>
-
-        <!-- Link to Login -->
-        <div class="mt-2">
-            <a asp-action="Login" class="btn btn-link">Вече имате акаунт? Вход</a>
-        </div>
-    </form>
+    </div>
 </div>
 
-<!-- Enable Client-side Validation -->
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

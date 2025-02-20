@@ -2,15 +2,19 @@
 
 namespace KitchEd.Controllers
 {
-    //[Authorize(Roles = "Admin")] // Restricts access to Admins only
-    public class AdminPanelController : Controller
+    [AdminOnly]
+    [Route("admin-panel")]
+    public class AdminPanelController : BaseController
     {
-        // Dashboard (Main Admin Panel Page)
-        public ActionResult Index()
+        [HttpGet]
+        public IActionResult Index()
         {
+            if (!IsAdmin)
+            {
+                return RedirectToHomeWithError("Нямате достъп до тази страница.");
+            }
+            
             return View("~/Views/AdminPanel/Home/Index.cshtml");
         }
-
-      
     }                                                    
 }

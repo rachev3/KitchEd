@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KitchEd.Controllers
 {
-    //[Authorize(Roles = "Admin")] 
-    public class SkillLevelController : Controller
+    [AdminOnly]
+    public class SkillLevelController : BaseController
     {
         private readonly ISkillLevelService _skillLevelService;
 
