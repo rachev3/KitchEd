@@ -22,8 +22,8 @@ namespace KitchEd.Models.ViewModels.Auth
         public string LastName { get; set; }
 
         [Required(ErrorMessage = "Моля, изберете роля.")]
-        [EnumDataType(typeof(PlatformRoles))]
-        public PlatformRoles Role { get; set; }
+        [EnumDataType(typeof(UserRoles))]
+        public UserRoles Role { get; set; }
 
         [Phone(ErrorMessage = "Моля, въведете валиден телефонен номер.")]
         public string PhoneNumber { get; set; } // Optional

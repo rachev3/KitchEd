@@ -21,22 +21,31 @@ namespace KitchEd.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Register()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("not valid model");
+                Console.WriteLine("Model state is not valid");
                 return View(model);
             }
-            if (model.Role == PlatformRoles.Admin)
+
+            // Only allow Chef and Student registrations
+            if (model.Role == UserRoles.Admin)
             {
+                Console.WriteLine("Model role is admin");
                 TempData["ErrorMessage"] = "Не можете да се регистрирате като администратор.";
                 return View(model);
             }
@@ -55,62 +64,73 @@ namespace KitchEd.Controllers
 
             if (result.Succeeded)
             {
-                string role = model.Role.ToString();
-                if (!await _roleManager.RoleExistsAsync(role))
+                // Assign role
+                var roleResult = await _userManager.AddToRoleAsync(user, model.Role.ToString());
+                
+                if (roleResult.Succeeded)
                 {
-                    await _roleManager.CreateAsync(new IdentityRole(role));
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToAction("Index", "Home");
                 }
-
-                await _userManager.AddToRoleAsync(user, role);
-
-                //// Store additional user details in claims
-                //await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("FirstName", model.FirstName ?? ""));
-                //await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("LastName", model.LastName ?? ""));
-                //await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("ShortBio", model.ShortBio ?? ""));
-
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToAction("Index", "Home");
+                else
+                {
+                    foreach (var error in roleResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
             }
-
-            foreach (var error in result.Errors)
+            else
             {
-                Console.WriteLine(error.Description);
-                ModelState.AddModelError("", error.Code);
+                foreach (var error in result.Errors)
+                {
+                    Console.WriteLine("Result error: " + error.Description);
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
 
             return View(model);
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Login()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
+            {
                 return View(model);
+            }
 
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-
+            var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, lockoutOnFailure: false);
+            
             if (result.Succeeded)
             {
                 return RedirectToAction("Index", "Home");
             }
-
-            ModelState.AddModelError("", "Invalid login attempt.");
+            
+            ModelState.AddModelError(string.Empty, "Невалидно потребителско име или парола.");
             return View(model);
         }
 
         [HttpPost]
         [Authorize]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Login", "Auth");
+            return RedirectToAction("Index", "Home");
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace KitchEd.Data.Enums
 {
-    public enum PlatformRoles
+    public enum UserRoles
     {
         Admin = 1,
         Chef,

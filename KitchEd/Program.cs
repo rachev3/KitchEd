@@ -13,9 +13,25 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentity<User, IdentityRole>()
+builder.Services.AddIdentity<User, IdentityRole>(options => {
+    options.SignIn.RequireConfirmedAccount = false;
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 6;
+})
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<RoleInitializationService>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("RequireChefRole", policy => policy.RequireRole("Chef"));
+    options.AddPolicy("RequireStudentRole", policy => policy.RequireRole("Student"));
+});
 
 builder.Services.AddRazorPages().AddRazorOptions(options =>
 {
@@ -34,8 +50,15 @@ builder.Services.AddScoped<IUserCourseService, UserCourseService>();
 builder.Services.AddScoped<ISkillLevelService, SkillLevelService>();
 builder.Services.AddScoped<IDishTypeService, DishTypeService>();
 
-
 var app = builder.Build();
+
+// Initialize Roles
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var roleInitializer = services.GetRequiredService<RoleInitializationService>();
+    await roleInitializer.InitializeRoles();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -54,6 +77,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
