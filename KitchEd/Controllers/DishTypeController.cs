@@ -52,7 +52,7 @@ namespace KitchEd.Controllers
                 var dishType = await _dishTypeService.GetById(id);
                 return View(dishType);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 TempData["ErrorMessage"] = "Типът ястие не бе намерено.";
                 return RedirectToAction("Index");
@@ -71,7 +71,7 @@ namespace KitchEd.Controllers
                 TempData["SuccessMessage"] = "Типът ястие е обновен успешно!";
                 return RedirectToAction("Index");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 TempData["ErrorMessage"] = "Вече съществува такъв тип ястие.";
                 return View(dishTypeVM);
@@ -85,7 +85,7 @@ namespace KitchEd.Controllers
                 await _dishTypeService.Delete(id);
                 TempData["SuccessMessage"] = "Типът ястие е изтрит успешно!";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 TempData["ErrorMessage"] = "Типът ястие не бе намерено.";
             }

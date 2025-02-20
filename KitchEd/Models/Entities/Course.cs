@@ -13,8 +13,8 @@ namespace KitchEd.Models.Entities
         public double Price { get; set; }
         public int MaxParticipants { get; set; }
         public string MainImageUrl { get; set; }
-        public DateOnly StartDate { get; set; }
-        public DateOnly EndDate { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public CourseStatus CourseStatus { get; set; }     // inactive, active, ongoing, completed
 
         public int CourseCategoryId { get; set; }
