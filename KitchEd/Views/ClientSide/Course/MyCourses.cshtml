@@ -1,0 +1,213 @@
+@model IEnumerable<CourseViewModel>
+
+@{
+    ViewData["Title"] = "Моите курсове - KitchEd";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>
+            <i class="fas fa-chalkboard-teacher me-2"></i>
+            Моите курсове
+        </h1>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus-circle me-2"></i>Създай нов курс
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle me-2"></i>
+            Все още нямате създадени курсове. Създайте първия си курс сега!
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-3">
+                <div class="list-group" id="courseTabList" role="tablist">
+                    <a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="#pending" role="tab">
+                        <i class="fas fa-clock me-2"></i>Чакащи одобрение
+                    </a>
+                    <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#active" role="tab">
+                        <i class="fas fa-play-circle me-2"></i>Активни
+                    </a>
+                    <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#ongoing" role="tab">
+                        <i class="fas fa-running me-2"></i>В процес
+                    </a>
+                    <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#completed" role="tab">
+                        <i class="fas fa-check-circle me-2"></i>Завършени
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="pending" role="tabpanel">
+                        @{var pendingCourses = Model.Where(c => c.Status == CourseStatus.Inactive);}
+                        @if (!pendingCourses.Any())
+                        {
+                            <div class="alert alert-info">Нямате курсове чакащи одобрение.</div>
+                        }
+                        else
+                        {
+                            <div class="list-group">
+                                @foreach (var course in pendingCourses)
+                                {
+                                    <div class="list-group-item">
+                                        <p class="mb-1">@course.Description</p>
+                                        <div class="d-flex justify-content-end gap-2 mt-2">
+                                            <a asp-action="Edit" asp-route-id="@course.CourseId" class="btn btn-sm btn-warning">
+                                                <i class="fas fa-edit me-1"></i>Редактирай
+                                            </a>
+                                            <a asp-action="Details" asp-route-id="@course.CourseId" class="btn btn-sm btn-info">
+                                                <i class="fas fa-info-circle me-1"></i>Детайли
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <div class="tab-pane fade" id="active" role="tabpanel">
+                        @{var activeCourses = Model.Where(c => c.Status == CourseStatus.Active);}
+                        @if (!activeCourses.Any())
+                        {
+                            <div class="alert alert-info">Нямате активни курсове.</div>
+                        }
+                        else
+                        {
+                            <div class="list-group">
+                                @foreach (var course in activeCourses)
+                                {
+                                    <div class="list-group-item">
+                                        <div class="d-flex w-100 justify-content-between align-items-center">
+                                            <h5 class="mb-1">@course.Title</h5>
+                                            <span class="badge bg-success">@course.CurrentParticipants/@course.MaxParticipants участника</span>
+                                        </div>
+                                        <p class="mb-1">Начало: @course.StartDate.ToString("dd.MM.yyyy")</p>
+                                        <div class="d-flex justify-content-end gap-2 mt-2">
+                                            <a asp-action="Enrollments" asp-route-id="@course.CourseId" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-users me-1"></i>Записвания
+                                            </a>
+                                            <a asp-action="Details" asp-route-id="@course.CourseId" class="btn btn-sm btn-info">
+                                                <i class="fas fa-info-circle me-1"></i>Детайли
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <div class="tab-pane fade" id="ongoing" role="tabpanel">
+                        @{var ongoingCourses = Model.Where(c => c.Status == CourseStatus.Ongoing);}
+                        @if (!ongoingCourses.Any())
+                        {
+                            <div class="alert alert-info">Нямате текущи курсове.</div>
+                        }
+                        else
+                        {
+                            <div class="list-group">
+                                @foreach (var course in ongoingCourses)
+                                {
+                                    <div class="list-group-item">
+                                        <div class="d-flex w-100 justify-content-between align-items-center">
+                                            <h5 class="mb-1">@course.Title</h5>
+                                            <small class="text-muted">Край: @course.EndDate.ToString("dd.MM.yyyy")</small>
+                                        </div>
+                                        <div class="progress mt-2" style="height: 20px;">
+                                            @{
+                                                var totalDays = (course.EndDate - course.StartDate).TotalDays;
+                                                var daysPassed = (DateTime.Now - course.StartDate).TotalDays;
+                                                var progressPercentage = (daysPassed / totalDays) * 100;
+                                            }
+                                            <div class="progress-bar" role="progressbar" style="width: @progressPercentage%">
+                                                @Math.Round(progressPercentage)%
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-end gap-2 mt-2">
+                                            <a asp-action="Details" asp-route-id="@course.CourseId" class="btn btn-sm btn-info">
+                                                <i class="fas fa-info-circle me-1"></i>Детайли
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <div class="tab-pane fade" id="completed" role="tabpanel">
+                        @{var completedCourses = Model.Where(c => c.Status == CourseStatus.Completed);}
+                        @if (!completedCourses.Any())
+                        {
+                            <div class="alert alert-info">Нямате завършени курсове.</div>
+                        }
+                        else
+                        {
+                            <div class="list-group">
+                                @foreach (var course in completedCourses)
+                                {
+                                    <div class="list-group-item">
+                                        <div class="d-flex w-100 justify-content-between align-items-center">
+                                            <h5 class="mb-1">@course.Title</h5>
+                                            <small class="text-muted">Завършен на @course.EndDate.ToString("dd.MM.yyyy")</small>
+                                        </div>
+                                        <p class="mb-1">Участници: @course.CurrentParticipants</p>
+                                        <div class="d-flex justify-content-end gap-2 mt-2">
+                                            <a asp-action="Details" asp-route-id="@course.CourseId" class="btn btn-sm btn-info">
+                                                <i class="fas fa-info-circle me-1"></i>Детайли
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Styles {
+    <style>
+        .progress {
+            background-color: #e9ecef;
+            border-radius: 0.25rem;
+        }
+
+        .progress-bar {
+            background-color: #0d6efd;
+            color: white;
+            text-align: center;
+            line-height: 20px;
+            transition: width 0.6s ease;
+        }
+
+        .list-group-item {
+            border: 1px solid rgba(0,0,0,.125);
+            margin-bottom: 0.5rem;
+            border-radius: 0.25rem !important;
+        }
+
+        .tab-content {
+            background: white;
+            padding: 20px;
+            border-radius: 0.25rem;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        #courseTabList .list-group-item {
+            border-radius: 0.25rem !important;
+            margin-bottom: 0.5rem;
+        }
+
+        #courseTabList .list-group-item.active {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+    </style>
+}

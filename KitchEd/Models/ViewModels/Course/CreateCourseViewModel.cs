@@ -1,54 +1,49 @@
 using System.ComponentModel.DataAnnotations;
+using KitchEd.Data.Enums;
+using KitchEd.Models.ViewModels.CourseCategory;
+using KitchEd.Models.ViewModels.DishType;
+using KitchEd.Models.ViewModels.SkillLevel;
 
-namespace KitchEd.Models.ViewModels.Course
+namespace KitchEd.Models.ViewModels.Course;
+
+public class CreateCourseViewModel : CourseViewModel
 {
-    public class CreateCourseViewModel
-    {
-        [Required(ErrorMessage = "Моля, въведете заглавие.")]
-        [StringLength(50, ErrorMessage = "Заглавието не може да надвишава 50 символа.")]
-        [Display(Name = "Заглавие")]
-        public string Title { get; set; }
+    public override CourseStatus Status { get; set; } = CourseStatus.Inactive;
+    public override int CurrentParticipants { get; set; } = 0;
 
-        [Required(ErrorMessage = "Моля, въведете описание.")]
-        [StringLength(1000, ErrorMessage = "Описанието не може да надвишава 1000 символа.")]
-        [Display(Name = "Описание")]
-        public string Description { get; set; }
 
-        [Required(ErrorMessage = "Моля, въведете цена.")]
-        [Range(0, double.MaxValue, ErrorMessage = "Цената трябва да бъде положително число.")]
-        [Display(Name = "Цена")]
-        public double Price { get; set; }
+    public override DateTime EndDate { get; set; }
 
-        [Required(ErrorMessage = "Моля, въведете максимален брой участници.")]
-        [Range(1, int.MaxValue, ErrorMessage = "Броят участници трябва да е положително число.")]
-        [Display(Name = "Максимален брой участници")]
-        public int MaxParticipants { get; set; }
+    // Display names for form labels
+    [Display(Name = "Заглавие")]
+    public override string Title { get; set; } = null!;
 
-        [Required(ErrorMessage = "Моля, въведете URL на основната снимка.")]
-        [Url(ErrorMessage = "Моля, въведете валиден URL адрес.")]
-        [Display(Name = "URL на основната снимка")]
-        public string MainImageUrl { get; set; }
+    [Display(Name = "Описание")]
+    public override string Description { get; set; } = null!;
 
-        [Required(ErrorMessage = "Моля, въведете начална дата.")]
-        [DataType(DataType.DateTime)]
-        [Display(Name = "Начална дата")]
-        public DateTime StartDate { get; set; }
+    [Display(Name = "Категория")]
+    public override int CategoryId { get; set; }
 
-        [Required(ErrorMessage = "Моля, въведете крайна дата.")]
-        [DataType(DataType.DateTime)]
-        [Display(Name = "Крайна дата")]
-        public DateTime EndDate { get; set; }
+    [Display(Name = "Тип ястие")]
+    public override int DishTypeId { get; set; }
 
-        [Required(ErrorMessage = "Моля, изберете категория.")]
-        [Display(Name = "Категория")]
-        public int CourseCategoryId { get; set; }
+    [Display(Name = "Ниво на умения")]
+    public override int SkillLevelId { get; set; }
 
-        [Required(ErrorMessage = "Моля, изберете тип ястие.")]
-        [Display(Name = "Тип ястие")]
-        public int DishTypeId { get; set; }
+    [Display(Name = "Начална дата")]
+    public override DateTime StartDate { get; set; }
 
-        [Required(ErrorMessage = "Моля, изберете ниво на умения.")]
-        [Display(Name = "Ниво на умения")]
-        public int SkillLevelId { get; set; }
-    }
-} 
+    [Display(Name = "Цена")]
+    public override double Price { get; set; }
+
+    [Display(Name = "Максимален брой участници")]
+    public override int MaxParticipants { get; set; }
+
+    [Display(Name = "URL на основната снимка")]
+    public override string MainImageUrl { get; set; } = null!;
+
+    public List<CourseCategoryViewModel> Categories { get; set; } = new List<CourseCategoryViewModel>();
+    public List<DishTypeViewModel> DishTypes { get; set; } = new List<DishTypeViewModel>();
+    public List<SkillLevelViewModel> SkillLevels { get; set; } = new List<SkillLevelViewModel>();
+}
+

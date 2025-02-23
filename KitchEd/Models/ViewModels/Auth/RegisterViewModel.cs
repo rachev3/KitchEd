@@ -5,40 +5,50 @@ namespace KitchEd.Models.ViewModels.Auth
 {
     public class RegisterViewModel
     {
-        [Required(ErrorMessage = "Моля, въведете потребителско име.")]
-        [StringLength(25, ErrorMessage = "Потребителското име не може да надвишава 25 символа.")]
+        [Required(ErrorMessage = "Потребителското име е задължително")]
+        [StringLength(25, MinimumLength = 3, ErrorMessage = "Потребителското име трябва да е между 3 и 25 символа")]
+
+        [Display(Name = "Потребителско име")]
         public string Username { get; set; }
 
-        [Required(ErrorMessage = "Моля, въведете email.")]
-        [EmailAddress(ErrorMessage = "Моля, въведете валиден email.")]
+        [Required(ErrorMessage = "Email адресът е задължителен")]
+        [EmailAddress(ErrorMessage = "Невалиден email адрес")]
+        [Display(Name = "Email")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Моля, въведете име.")]
-        [StringLength(50, ErrorMessage = "Името не може да надвишава 50 символа.")]
+        [Required(ErrorMessage = "Името е задължително")]
+        [StringLength(50, ErrorMessage = "Името не може да надвишава 50 символа")]
+        [Display(Name = "Име")]
         public string FirstName { get; set; }
 
-        [Required(ErrorMessage = "Моля, въведете фамилия.")]
-        [StringLength(50, ErrorMessage = "Фамилията не може да надвишава 50 символа.")]
+        [Required(ErrorMessage = "Фамилията е задължителна")]
+        [StringLength(50, ErrorMessage = "Фамилията не може да надвишава 50 символа")]
+        [Display(Name = "Фамилия")]
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = "Моля, изберете роля.")]
-        [EnumDataType(typeof(UserRoles))]
-        public UserRoles Role { get; set; }
+        [Phone(ErrorMessage = "Невалиден телефонен номер")]
+        [Display(Name = "Телефон")]
+        public string? PhoneNumber { get; set; }
 
-        [Phone(ErrorMessage = "Моля, въведете валиден телефонен номер.")]
-        public string PhoneNumber { get; set; } // Optional
+        [StringLength(500, ErrorMessage = "Биографията не може да надвишава 500 символа")]
+        [Display(Name = "Кратка биография")]
+        public string? ShortBio { get; set; }
 
-        [StringLength(200, ErrorMessage = "Описанието не може да надвишава 200 символа.")]
-        public string ShortBio { get; set; }   // Optional
-
-        [Required(ErrorMessage = "Моля, въведете парола.")]
+        [Required(ErrorMessage = "Паролата е задължителна")]
+        [StringLength(100, MinimumLength = 6, ErrorMessage = "Паролата трябва да е поне 6 символа")]
         [DataType(DataType.Password)]
-        [StringLength(100, MinimumLength = 6, ErrorMessage = "Паролата трябва да бъде между 6 и 100 символа.")]
+        [Display(Name = "Парола")]
         public string Password { get; set; }
 
-        [Required(ErrorMessage = "Моля, повторете паролата.")]
+
+        [Required(ErrorMessage = "Повторете паролата")]
         [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "Паролите не съвпадат.")]
+        [Display(Name = "Повторете паролата")]
+        [Compare("Password", ErrorMessage = "Паролите не съвпадат")]
         public string ConfirmPassword { get; set; }
+
+        [Required(ErrorMessage = "Моля, изберете роля")]
+        [Display(Name = "Роля")]
+        public UserRoles Role { get; set; }
     }
 }

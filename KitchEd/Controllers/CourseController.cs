@@ -37,6 +37,7 @@ namespace KitchEd.Controllers
         // GET: /Course
         public async Task<IActionResult> Index()
         {
+            Console.WriteLine("Index..........................................");
             var courses = await _courseService.GetActiveCourses();
             return View(courses);
         }
@@ -71,10 +72,15 @@ namespace KitchEd.Controllers
         [ChefOnly]
         public async Task<IActionResult> Create()
         {
-            ViewBag.Categories = await _categoryService.GetAll();
-            ViewBag.DishTypes = await _dishTypeService.GetAll();
-            ViewBag.SkillLevels = await _skillLevelService.GetAll();
-            return View();
+            var categories = await _categoryService.GetAll();
+            var dishTypes = await _dishTypeService.GetAll();
+            var skillLevels = await _skillLevelService.GetAll();
+            return View(new CreateCourseViewModel
+            {
+                Categories = categories.ToList(),
+                DishTypes = dishTypes.ToList(),
+                SkillLevels = skillLevels.ToList()
+            });
         }
 
         // POST: /Course/Create
@@ -114,7 +120,7 @@ namespace KitchEd.Controllers
                 return NotFound();
             }
 
-            if (course.CourseStatus == CourseStatus.Active)
+            if (course.Status == CourseStatus.Active)
             {
                 return RedirectToHomeWithError("Не можете да редактирате активен курс.");
             }
@@ -133,7 +139,7 @@ namespace KitchEd.Controllers
                 MainImageUrl = course.MainImageUrl,
                 StartDate = course.StartDate,
                 EndDate = course.EndDate,
-                CourseCategoryId = int.Parse(course.CategoryName),
+                CategoryId = int.Parse(course.CategoryName),
                 DishTypeId = int.Parse(course.DishTypeName),
                 SkillLevelId = int.Parse(course.SkillLevelName)
             };

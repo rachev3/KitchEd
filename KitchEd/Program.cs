@@ -13,7 +13,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentity<User, IdentityRole>(options => {
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+{
     options.SignIn.RequireConfirmedAccount = false;
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
@@ -45,11 +46,11 @@ builder.Services.AddRazorPages().AddRazorOptions(options =>
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<ICourseCategoryService, CourseCategoryService>();
-builder.Services.AddScoped<ICourseImageServie, CourseImageService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IUserCourseService, UserCourseService>();
 builder.Services.AddScoped<ISkillLevelService, SkillLevelService>();
 builder.Services.AddScoped<IDishTypeService, DishTypeService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
@@ -95,8 +96,8 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "admin",
     pattern: "admin-panel/{controller}/{action}/{id?}",
-    defaults: new {action = "Index", controller = "AdminPanel"},
-    constraints: new {controller = "AdminPanel|CourseCategory|DishType|SkillLevel" }
+    defaults: new { action = "Index", controller = "AdminPanel" },
+    constraints: new { controller = "AdminPanel|CourseCategory|DishType|SkillLevel" }
 );
 app.MapControllerRoute(
     name: "default",

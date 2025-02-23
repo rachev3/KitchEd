@@ -1,23 +1,14 @@
 using System.ComponentModel.DataAnnotations;
+using KitchEd.Data.Enums;
 
-namespace KitchEd.Models.ViewModels.Course
+namespace KitchEd.Models.ViewModels.Course;
+
+public class EditCourseViewModel : CourseViewModel
 {
-    public class EditCourseViewModel : CreateCourseViewModel
-    {
-        public int CourseId { get; set; }
+    [Compare(nameof(StartDate), ErrorMessage = "Крайната дата трябва да е след началната дата")]
+    public override DateTime EndDate { get; set; }
 
-        // Add any edit-specific validation or custom logic here
-        [CustomValidation(typeof(EditCourseViewModel), nameof(ValidateEndDate))]
-        public new DateTime EndDate { get; set; }
+    public bool CanEdit => Status == CourseStatus.Inactive;
 
-        public static ValidationResult ValidateEndDate(DateTime endDate, ValidationContext context)
-        {
-            var instance = (EditCourseViewModel)context.ObjectInstance;
-            if (endDate <= instance.StartDate)
-            {
-                return new ValidationResult("Крайната дата трябва да бъде след началната дата.");
-            }
-            return ValidationResult.Success;
-        }
-    }
-} 
+    public string? StatusMessage { get; set; }
+}

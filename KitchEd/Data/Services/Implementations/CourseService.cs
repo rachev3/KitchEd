@@ -28,7 +28,7 @@ namespace KitchEd.Data.Services.Implementations
                 StartDate = model.StartDate,
                 EndDate = model.EndDate,
                 CourseStatus = CourseStatus.Inactive,
-                CourseCategoryId = model.CourseCategoryId,
+                CourseCategoryId = model.CategoryId,
                 DishTypeId = model.DishTypeId,
                 SkillLevelId = model.SkillLevelId
             };
@@ -67,7 +67,7 @@ namespace KitchEd.Data.Services.Implementations
                     MainImageUrl = c.MainImageUrl,
                     StartDate = c.StartDate,
                     EndDate = c.EndDate,
-                    CourseStatus = c.CourseStatus,
+                    Status = c.CourseStatus,
                     CategoryName = c.CourseCategory.Name,
                     DishTypeName = c.DishType.Name,
                     SkillLevelName = c.SkillLevel.Name
@@ -95,7 +95,7 @@ namespace KitchEd.Data.Services.Implementations
                 MainImageUrl = course.MainImageUrl,
                 StartDate = course.StartDate,
                 EndDate = course.EndDate,
-                CourseStatus = course.CourseStatus,
+                Status = course.CourseStatus,
                 CategoryName = course.CourseCategory.Name,
                 DishTypeName = course.DishType.Name,
                 SkillLevelName = course.SkillLevel.Name
@@ -122,7 +122,7 @@ namespace KitchEd.Data.Services.Implementations
                     MainImageUrl = uc.Course.MainImageUrl,
                     StartDate = uc.Course.StartDate,
                     EndDate = uc.Course.EndDate,
-                    CourseStatus = uc.Course.CourseStatus,
+                    Status = uc.Course.CourseStatus,
                     CategoryName = uc.Course.CourseCategory.Name,
                     DishTypeName = uc.Course.DishType.Name,
                     SkillLevelName = uc.Course.SkillLevel.Name
@@ -147,7 +147,7 @@ namespace KitchEd.Data.Services.Implementations
                     MainImageUrl = c.MainImageUrl,
                     StartDate = c.StartDate,
                     EndDate = c.EndDate,
-                    CourseStatus = c.CourseStatus,
+                    Status = c.CourseStatus,
                     CategoryName = c.CourseCategory.Name,
                     DishTypeName = c.DishType.Name,
                     SkillLevelName = c.SkillLevel.Name
@@ -168,7 +168,7 @@ namespace KitchEd.Data.Services.Implementations
             course.MainImageUrl = model.MainImageUrl;
             course.StartDate = model.StartDate;
             course.EndDate = model.EndDate;
-            course.CourseCategoryId = model.CourseCategoryId;
+            course.CourseCategoryId = model.CategoryId;
             course.DishTypeId = model.DishTypeId;
             course.SkillLevelId = model.SkillLevelId;
 
@@ -201,16 +201,16 @@ namespace KitchEd.Data.Services.Implementations
         public async Task<bool> IsChefOwner(int courseId, string chefId)
         {
             return await _context.UserCourses
-                .AnyAsync(uc => uc.CourseId == courseId && 
-                               uc.UserId == chefId && 
+                .AnyAsync(uc => uc.CourseId == courseId &&
+                               uc.UserId == chefId &&
                                uc.Role == UserRoles.Chef.ToString());
         }
 
         public async Task<int> GetEnrolledStudentsCount(int courseId)
         {
             return await _context.UserCourses
-                .CountAsync(uc => uc.CourseId == courseId && 
-                                 uc.Role == UserRoles.Student.ToString() && 
+                .CountAsync(uc => uc.CourseId == courseId &&
+                                 uc.Role == UserRoles.Student.ToString() &&
                                  uc.Status == UserCourseStatus.Approved);
         }
 
@@ -223,12 +223,12 @@ namespace KitchEd.Data.Services.Implementations
             if (course == null) return false;
 
             var enrolledStudents = course.UserCourses
-                .Count(uc => uc.Role == UserRoles.Student.ToString() && 
+                .Count(uc => uc.Role == UserRoles.Student.ToString() &&
                             uc.Status == UserCourseStatus.Approved);
 
             return enrolledStudents < course.MaxParticipants;
         }
 
-   
+
     }
 }

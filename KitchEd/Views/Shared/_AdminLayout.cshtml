@@ -16,7 +16,7 @@
         <!-- Sidebar -->
         <nav class="admin-sidebar">
             <div class="sidebar-header">
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="sidebar-brand">
+                <a asp-controller="Home" asp-action="Index" class="sidebar-brand">
                     <i class="fas fa-utensils"></i>
                     <span>KitchEd</span>
                 </a>
@@ -25,23 +25,29 @@
             <div class="sidebar-menu">
                 <div class="menu-header">Управление на данни</div>
                 <a class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "CourseCategory" ? "active" : "")" 
-                   asp-area="Admin" asp-controller="CourseCategory" asp-action="Index">
+                    asp-controller="CourseCategory" asp-action="Index">
                     <i class="fas fa-tags"></i>
                     <span>Категории</span>
                 </a>
                 <a class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "DishType" ? "active" : "")" 
-                   asp-area="Admin" asp-controller="DishType" asp-action="Index">
+                   asp-controller="DishType" asp-action="Index">
                     <i class="fas fa-hamburger"></i>
                     <span>Типове ястия</span>
                 </a>
                 <a class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "SkillLevel" ? "active" : "")" 
-                   asp-area="Admin" asp-controller="SkillLevel" asp-action="Index">
+                    asp-controller="SkillLevel" asp-action="Index">
                     <i class="fas fa-graduation-cap"></i>
                     <span>Нива на умения</span>
                 </a>
 
+                <div class="menu-header">Управление на потребителите</div>
+                   <a class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "User" ? "active" : "")" 
+                    asp-controller="User" asp-action="Index">
+                    <i class="fas fa-users"></i>
+                    <span>Всички потребители</span>
+                </a>
                 <div class="menu-header mt-4">Акаунт</div>
-                <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post" class="logout-form">
+                <form asp-controller="Auth" asp-action="Logout" method="post" class="logout-form">
                     @Html.AntiForgeryToken()
                     <button type="submit" class="menu-item">
                         <i class="fas fa-sign-out-alt"></i>

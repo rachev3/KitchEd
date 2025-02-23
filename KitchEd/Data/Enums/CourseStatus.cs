@@ -2,9 +2,9 @@
 {
     public enum CourseStatus
     {
-        Inactive = 1, //waiting for admin to approve
-        Active,
-        Ongoing,
-        Completed,
+        Inactive = 0,
+        Active = 1,
+        Ongoing = 2,
+        Completed = 3
     }
 }

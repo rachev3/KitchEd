@@ -12,12 +12,18 @@
                 <p class="auth-subtitle">Създайте своя акаунт в KitchEd</p>
             </div>
 
-            @if (TempData["ErrorMessage"] != null)
+            @if (!ViewData.ModelState.IsValid)
             {
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="fas fa-exclamation-circle me-2"></i>
-                    @TempData["ErrorMessage"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach (var modelState in ViewData.ModelState.Values)
+                        {
+                            foreach (var error in modelState.Errors)
+                            {
+                                <li>@error.ErrorMessage</li>
+                            }
+                        }
+                    </ul>
                 </div>
             }
 
@@ -69,13 +75,13 @@
 
                 <div class="form-floating mb-3">
                     <input asp-for="PhoneNumber" class="form-control" placeholder="Телефон" />
-                    <label asp-for="PhoneNumber"><i class="fas fa-phone me-2"></i>Телефон (по избор)</label>
+                    <label asp-for="PhoneNumber"><i class="fas fa-phone me-2"></i>Телефон (незадължително)</label>
                     <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                 </div>
 
                 <div class="form-floating mb-3">
                     <textarea asp-for="ShortBio" class="form-control" placeholder="Кратка биография" style="height: 100px"></textarea>
-                    <label asp-for="ShortBio"><i class="fas fa-book-open me-2"></i>Кратка биография (по избор)</label>
+                    <label asp-for="ShortBio"><i class="fas fa-book-open me-2"></i>Кратка биография (незадължително)</label>
                     <span asp-validation-for="ShortBio" class="text-danger"></span>
                 </div>
 
@@ -111,4 +117,65 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Enable client-side validation
+        $(document).ready(function () {
+            $.validator.setDefaults({
+                ignore: [] // Don't ignore hidden fields
+            });
+
+            $('form').validate({
+                errorElement: 'span',
+                errorClass: 'text-danger',
+                highlight: function (element) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element) {
+                    $(element).removeClass('is-invalid');
+                },
+                rules: {
+                    // Explicitly set PhoneNumber and ShortBio as not required
+                    PhoneNumber: {
+                        required: false
+                    },
+                    ShortBio: {
+                        required: false
+                    }
+                }
+            });
+        });
+    </script>
 }
+
+<style>
+    .text-danger {
+        display: block;
+        margin-top: 0.25rem;
+        font-size: 0.875rem;
+    }
+
+    .is-invalid {
+        border-color: #dc3545;
+    }
+
+    .is-invalid:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+
+    .alert ul {
+        padding-left: 1rem;
+    }
+
+    /* Add styles for required fields */
+    .form-floating label[for]:not([for="PhoneNumber"]):not([for="ShortBio"])::after {
+        content: " *";
+        color: #dc3545;
+    }
+
+    /* Optional fields style */
+    .form-floating label[for="PhoneNumber"],
+    .form-floating label[for="ShortBio"] {
+        color: #6c757d;
+    }
+</style>
