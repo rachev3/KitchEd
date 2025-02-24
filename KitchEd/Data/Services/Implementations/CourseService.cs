@@ -78,6 +78,31 @@ namespace KitchEd.Data.Services.Implementations
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<CourseViewModel>> GetAllNeedApproval()
+        {
+            return await _context.Courses
+                .Where(c => c.CourseStatus == CourseStatus.Inactive)
+                .Select(c => new CourseViewModel
+                {
+                    CourseId = c.CourseId,
+                    Title = c.Title,
+                    Description = c.Description,
+                    Price = c.Price,
+                    MaxParticipants = c.MaxParticipants,
+                    MainImageUrl = c.MainImageUrl,
+                    StartDate = c.StartDate,
+                    EndDate = c.EndDate,
+                    Status = c.CourseStatus,
+                    CategoryName = c.CourseCategory.Name,
+                    DishTypeName = c.DishType.Name,
+                    SkillLevelName = c.SkillLevel.Name,
+                    CategoryId = c.CourseCategoryId,
+                    DishTypeId = c.DishTypeId,
+                    SkillLevelId = c.SkillLevelId
+                })
+                .ToListAsync();
+        }
+
         public async Task<CourseViewModel> GetById(int id)
         {
             var course = await _context.Courses

@@ -1,0 +1,105 @@
+@model IEnumerable<CourseViewModel>
+
+@{
+    ViewData["Title"] = "Курсове чакащи одобрение - KitchEd";
+}
+
+<div class="admin-content-header">
+    <h1 class="admin-title">
+        <i class="fas fa-clock me-2"></i>
+        Курсове чакащи одобрение
+    </h1>
+</div>
+
+<div class="admin-table-wrapper">
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle me-2"></i>
+            Няма курсове чакащи одобрение.
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var course in Model)
+            {
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm admin-card">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <img src="@course.MainImageUrl" class="img-fluid rounded-start h-100" style="object-fit: cover;" alt="@course.Title">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">@course.Title</h5>
+                                    <p class="card-text text-muted small">
+                                        <i class="fas fa-tag me-1"></i>@course.CategoryName |
+                                        <i class="fas fa-utensils me-1"></i>@course.DishTypeName |
+                                        <i class="fas fa-graduation-cap me-1"></i>@course.SkillLevelName
+                                    </p>
+                                    <p class="card-text">@(course.Description.Length > 100 ? course.Description.Substring(0, 100) + "..." : course.Description)</p>
+                                    <div class="d-flex flex-column gap-2">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="text-muted">
+                                                <i class="fas fa-calendar me-1"></i>@course.StartDate.ToString("dd.MM.yyyy")
+                                            </span>
+                                            <span class="text-primary fw-bold">@course.Price.ToString("F2") лв.</span>
+                                        </div>
+                                        <div class="btn-group">
+                                            <a asp-action="Details" asp-route-id="@course.CourseId" class="btn btn-outline-info btn-sm">
+                                                <i class="fas fa-info-circle me-1"></i>Детайли
+                                            </a>
+                                            <form asp-action="Approve" asp-route-id="@course.CourseId" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-outline-success btn-sm">
+                                                    <i class="fas fa-check me-1"></i>Одобри
+                                                </button>
+                                            </form>
+                                            <form asp-action="Reject" asp-route-id="@course.CourseId" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                    <i class="fas fa-times me-1"></i>Отхвърли
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Styles {
+    <style>
+        .admin-card {
+            transition: transform 0.2s;
+        }
+
+        .admin-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .btn-group {
+            width: 100%;
+        }
+
+        .btn-group .btn {
+            flex: 1;
+        }
+
+        .card-text {
+            margin-bottom: 1rem;
+        }
+
+        .text-muted {
+            font-size: 0.9rem;
+        }
+
+        .btn i {
+            font-size: 0.9rem;
+        }
+    </style>
+}

@@ -103,7 +103,7 @@
                                         </div>
                                         <p class="mb-1">Начало: @course.StartDate.ToString("dd.MM.yyyy")</p>
                                         <div class="d-flex justify-content-end gap-2 mt-2">
-                                            <a asp-action="Enrollments" asp-route-id="@course.CourseId"
+                                            <a asp-action="Enrollments" asp-route-courseId="@course.CourseId"
                                                 class="btn btn-sm btn-primary">
                                                 <i class="fas fa-users me-1"></i>Записвания
                                             </a>

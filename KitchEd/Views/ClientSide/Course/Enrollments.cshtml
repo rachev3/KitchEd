@@ -1,0 +1,148 @@
+@model IEnumerable<UserCourseViewModel>
+
+@{
+    ViewData["Title"] = "Записвания за курса - KitchEd";
+}
+
+<div class="container py-4">
+    <h1 class="mb-4">
+        <i class="fas fa-users me-2"></i>
+        Записвания за курса
+    </h1>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle me-2"></i>
+            Все още няма записвания за този курс.
+        </div>
+    }
+    else
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-warning">
+                <h5 class="mb-0">
+                    <i class="fas fa-clock me-2"></i>
+                    Чакащи одобрение
+                </h5>
+            </div>
+            <div class="card-body">
+                @{
+                    var pendingEnrollments = Model.Where(e => e.Status == UserCourseStatus.Pending);
+                }
+                @if (!pendingEnrollments.Any())
+                {
+                    <div class="alert alert-info mb-0">Няма чакащи записвания.</div>
+                }
+                else
+                {
+                    <div class="list-group">
+                        @foreach (var enrollment in pendingEnrollments)
+                        {
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-1">@enrollment.UserFullName</h5>
+                                        <p class="mb-1 text-muted">
+                                            <i class="fas fa-envelope me-2"></i>@enrollment.UserEmail
+                                        </p>
+                                        <p class="mb-1 text-muted">
+                                            <i class="fas fa-phone me-2"></i>@enrollment.UserPhoneNumber
+                                        </p>
+                                        <p class="mb-1 text-muted">
+                                            <i class="fas fa-calendar me-2"></i>Записан на:
+                                            @enrollment.SignUpDate.ToString("dd.MM.yyyy HH:mm")
+                                        </p>
+                                    </div>
+                                    <div class="btn-group">
+                                        <form asp-action="ApproveStudent" method="post" class="d-inline">
+                                            <input type="hidden" name="CourseId" value="@enrollment.CourseId" />
+                                            <input type="hidden" name="StudentId" value="@enrollment.UserId" />
+                                            <button type="submit" class="btn btn-success btn-sm">
+                                                <i class="fas fa-check me-1"></i>Одобри
+                                            </button>
+                                        </form>
+                                        <form asp-action="RejectStudent" method="post" class="d-inline ms-2">
+                                            <input type="hidden" name="CourseId" value="@enrollment.CourseId" />
+                                            <input type="hidden" name="StudentId" value="@enrollment.UserId" />
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-times me-1"></i>Отхвърли
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-check-circle me-2"></i>
+                    Одобрени записвания
+                </h5>
+            </div>
+            <div class="card-body">
+                @{
+                    var approvedEnrollments = Model.Where(e => e.Status == UserCourseStatus.Approved);
+                }
+                @if (!approvedEnrollments.Any())
+                {
+                    <div class="alert alert-info mb-0">Няма одобрени записвания.</div>
+                }
+                else
+                {
+                    <div class="list-group">
+                        @foreach (var enrollment in approvedEnrollments)
+                        {
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-1">@enrollment.UserFullName</h5>
+                                        <p class="mb-1 text-muted">
+                                            <i class="fas fa-envelope me-2"></i>@enrollment.UserEmail
+                                        </p>
+                                        <p class="mb-1 text-muted">
+                                            <i class="fas fa-phone me-2"></i>@enrollment.UserPhoneNumber
+                                        </p>
+                                        <span class="@enrollment.StatusBadgeClass">@enrollment.StatusText</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@section Styles {
+    <style>
+        .list-group-item {
+            border: 1px solid rgba(0, 0, 0, .125);
+            margin-bottom: 0.5rem;
+            border-radius: 0.25rem !important;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            border-radius: 0.25rem 0.25rem 0 0 !important;
+        }
+
+        .btn-group .btn {
+            border-radius: 0.25rem !important;
+        }
+
+        .btn i {
+            font-size: 0.9rem;
+        }
+    </style>
+}

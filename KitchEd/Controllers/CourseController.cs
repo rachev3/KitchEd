@@ -41,6 +41,12 @@ namespace KitchEd.Controllers
             var courses = await _courseService.GetActiveCourses();
             return View(courses);
         }
+        [AdminOnly]
+        public async Task<IActionResult> NeedApproval()
+        {
+            var courses = await _courseService.GetAllNeedApproval();
+            return View(courses);
+        }
 
         // GET: /Course/Details/5
         [AllowAnonymous]
@@ -194,7 +200,7 @@ namespace KitchEd.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [StudentOnly]
-        public async Task<IActionResult> Enroll(EnrollmentRequestViewModel model)
+        public async Task<IActionResult> Enroll(CourseDetailsViewModel model)
         {
             if (!await _courseService.HasAvailableSpots(model.CourseId))
             {
@@ -203,8 +209,8 @@ namespace KitchEd.Controllers
 
             try
             {
-                model.StudentId = _userManager.GetUserId(User);
-                await _userCourseService.EnrollStudent(model);
+                var userId = _userManager.GetUserId(User);
+                await _userCourseService.EnrollStudent(model, userId);
                 TempData["SuccessMessage"] = "Записахте се успешно за курса. Изчакайте одобрение от преподавателя.";
             }
             catch (InvalidOperationException ex)
@@ -213,6 +219,19 @@ namespace KitchEd.Controllers
             }
 
             return RedirectToAction(nameof(Details), new { id = model.CourseId });
+        }
+
+        [HttpGet]
+        [ChefOnly]
+        public async Task<IActionResult> Enrollments(int courseId)
+        {
+            var userId = _userManager.GetUserId(User);
+            if (!await _courseService.IsChefOwner(courseId, userId))
+            {
+                return RedirectToHomeWithError("Нямате достъп до този курс.");
+            }
+            var enrollments = await _userCourseService.GetCourseEnrollments(courseId);
+            return View(enrollments);
         }
 
         // POST: /Course/ApproveStudent
@@ -258,6 +277,40 @@ namespace KitchEd.Controllers
             var userId = _userManager.GetUserId(User);
             var enrollments = await _userCourseService.GetStudentEnrollments(userId);
             return View(enrollments);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AdminOnly]
+        public async Task<IActionResult> Approve(int id)
+        {
+            var success = await _courseService.UpdateStatus(id, CourseStatus.Active);
+            if (success)
+            {
+                TempData["SuccessMessage"] = "Курсът е одобрен успешно.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Възникна грешка при одобряването на курса.";
+            }
+            return RedirectToAction(nameof(NeedApproval));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AdminOnly]
+        public async Task<IActionResult> Reject(int id)
+        {
+            var success = await _courseService.Delete(id);
+            if (success)
+            {
+                TempData["SuccessMessage"] = "Курсът е отхвърлен успешно.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Възникна грешка при отхвърлянето на курса.";
+            }
+            return RedirectToAction(nameof(NeedApproval));
         }
     }
 }

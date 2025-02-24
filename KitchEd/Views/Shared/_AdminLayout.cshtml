@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="bg">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
+
 <body class="admin-body">
     <div class="admin-wrapper">
         <!-- Sidebar -->
@@ -24,28 +26,36 @@
 
             <div class="sidebar-menu">
                 <div class="menu-header">Управление на данни</div>
-                <a class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "CourseCategory" ? "active" : "")" 
+                <a class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "CourseCategory" ? "active" : "")"
                     asp-controller="CourseCategory" asp-action="Index">
                     <i class="fas fa-tags"></i>
                     <span>Категории</span>
                 </a>
-                <a class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "DishType" ? "active" : "")" 
-                   asp-controller="DishType" asp-action="Index">
+                <a class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "DishType" ? "active" : "")"
+                    asp-controller="DishType" asp-action="Index">
                     <i class="fas fa-hamburger"></i>
                     <span>Типове ястия</span>
                 </a>
-                <a class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "SkillLevel" ? "active" : "")" 
+                <a class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "SkillLevel" ? "active" : "")"
                     asp-controller="SkillLevel" asp-action="Index">
                     <i class="fas fa-graduation-cap"></i>
                     <span>Нива на умения</span>
                 </a>
 
                 <div class="menu-header">Управление на потребителите</div>
-                   <a class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "User" ? "active" : "")" 
+                <a class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "User" ? "active" : "")"
                     asp-controller="User" asp-action="Index">
                     <i class="fas fa-users"></i>
                     <span>Всички потребители</span>
                 </a>
+
+                <div class="menu-header">Управление на курсовете</div>
+                <a class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Course" ? "active" : "")"
+                    asp-controller="Course" asp-action="NeedApproval">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Курсове за одобрение</span>
+                </a>
+
                 <div class="menu-header mt-4">Акаунт</div>
                 <form asp-controller="Auth" asp-action="Logout" method="post" class="logout-form">
                     @Html.AntiForgeryToken()
@@ -85,10 +95,11 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.getElementById("toggleSidebar").addEventListener("click", function() {
+        document.getElementById("toggleSidebar").addEventListener("click", function () {
             document.body.classList.toggle("sidebar-collapsed");
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

@@ -1,6 +1,7 @@
 using KitchEd.Data.Enums;
 using KitchEd.Data.Services.Interfaces;
 using KitchEd.Models.Entities;
+using KitchEd.Models.ViewModels.Course;
 using KitchEd.Models.ViewModels.UserCourse;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,12 +16,12 @@ namespace KitchEd.Data.Services.Implementations
             _context = context;
         }
 
-        public async Task<UserCourseViewModel> EnrollStudent(EnrollmentRequestViewModel request)
+        public async Task<UserCourseViewModel> EnrollStudent(CourseDetailsViewModel model, string userId)
         {
             // Check if student is already enrolled
             var existingEnrollment = await _context.UserCourses
-                .FirstOrDefaultAsync(uc => uc.CourseId == request.CourseId && 
-                                         uc.UserId == request.StudentId && 
+                .FirstOrDefaultAsync(uc => uc.CourseId == model.CourseId &&
+                                         uc.UserId == userId &&
                                          uc.Role == UserRoles.Student.ToString());
 
             if (existingEnrollment != null)
@@ -30,8 +31,8 @@ namespace KitchEd.Data.Services.Implementations
 
             var enrollment = new UserCourse
             {
-                CourseId = request.CourseId,
-                UserId = request.StudentId,
+                CourseId = model.CourseId,
+                UserId = userId,
                 Role = UserRoles.Student.ToString(),
                 Status = UserCourseStatus.Pending,
                 SignUpDate = DateTime.UtcNow
@@ -51,14 +52,15 @@ namespace KitchEd.Data.Services.Implementations
                 .ThenInclude(c => c.SkillLevel)
                 .FirstAsync(uc => uc.UserCourseId == enrollment.UserCourseId);
 
+            //should it return this?
             return MapToViewModel(enrollmentWithDetails);
         }
 
         public async Task<bool> UpdateStudentStatus(EnrollmentStatusUpdateViewModel request)
         {
             var enrollment = await _context.UserCourses
-                .FirstOrDefaultAsync(uc => uc.CourseId == request.CourseId && 
-                                         uc.UserId == request.StudentId && 
+                .FirstOrDefaultAsync(uc => uc.CourseId == request.CourseId &&
+                                         uc.UserId == request.StudentId &&
                                          uc.Role == UserRoles.Student.ToString());
 
             if (enrollment == null)
@@ -74,8 +76,8 @@ namespace KitchEd.Data.Services.Implementations
         public async Task<bool> IsStudentEnrolled(int courseId, string studentId)
         {
             return await _context.UserCourses
-                .AnyAsync(uc => uc.CourseId == courseId && 
-                               uc.UserId == studentId && 
+                .AnyAsync(uc => uc.CourseId == courseId &&
+                               uc.UserId == studentId &&
                                uc.Role == UserRoles.Student.ToString());
         }
 
@@ -89,7 +91,7 @@ namespace KitchEd.Data.Services.Implementations
                 .ThenInclude(c => c.DishType)
                 .Include(uc => uc.Course)
                 .ThenInclude(c => c.SkillLevel)
-                .Where(uc => uc.CourseId == courseId && 
+                .Where(uc => uc.CourseId == courseId &&
                            uc.Role == UserRoles.Student.ToString())
                 .ToListAsync();
 
@@ -106,7 +108,7 @@ namespace KitchEd.Data.Services.Implementations
                 .ThenInclude(c => c.DishType)
                 .Include(uc => uc.Course)
                 .ThenInclude(c => c.SkillLevel)
-                .Where(uc => uc.UserId == studentId && 
+                .Where(uc => uc.UserId == studentId &&
                            uc.Role == UserRoles.Student.ToString())
                 .ToListAsync();
 
@@ -123,8 +125,8 @@ namespace KitchEd.Data.Services.Implementations
                 .ThenInclude(c => c.DishType)
                 .Include(uc => uc.Course)
                 .ThenInclude(c => c.SkillLevel)
-                .Where(uc => uc.CourseId == courseId && 
-                           uc.Role == UserRoles.Student.ToString() && 
+                .Where(uc => uc.CourseId == courseId &&
+                           uc.Role == UserRoles.Student.ToString() &&
                            uc.Status == UserCourseStatus.Pending)
                 .ToListAsync();
 
@@ -134,8 +136,8 @@ namespace KitchEd.Data.Services.Implementations
         public async Task<bool> TransferCourseOwnership(int courseId, string fromChefId, string toChefId)
         {
             var chefCourse = await _context.UserCourses
-                .FirstOrDefaultAsync(uc => uc.CourseId == courseId && 
-                                         uc.UserId == fromChefId && 
+                .FirstOrDefaultAsync(uc => uc.CourseId == courseId &&
+                                         uc.UserId == fromChefId &&
                                          uc.Role == UserRoles.Chef.ToString());
 
             if (chefCourse == null)
@@ -151,7 +153,7 @@ namespace KitchEd.Data.Services.Implementations
         public async Task<bool> TransferAllCoursesOwnership(string fromChefId, string toChefId)
         {
             var chefCourses = await _context.UserCourses
-                .Where(uc => uc.UserId == fromChefId && 
+                .Where(uc => uc.UserId == fromChefId &&
                            uc.Role == UserRoles.Chef.ToString())
                 .ToListAsync();
 
