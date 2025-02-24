@@ -2,6 +2,7 @@
 using KitchEd.Data.Services.Interfaces;
 using KitchEd.Models.Entities;
 using KitchEd.Models.ViewModels.Course;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace KitchEd.Data.Services.Implementations
@@ -9,10 +10,12 @@ namespace KitchEd.Data.Services.Implementations
     public class CourseService : ICourseService
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public CourseService(ApplicationDbContext context)
+        public CourseService(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // Create
@@ -96,10 +99,78 @@ namespace KitchEd.Data.Services.Implementations
                 StartDate = course.StartDate,
                 EndDate = course.EndDate,
                 Status = course.CourseStatus,
+                CategoryId = course.CourseCategoryId,
+                DishTypeId = course.DishTypeId,
+                SkillLevelId = course.SkillLevelId,
                 CategoryName = course.CourseCategory.Name,
                 DishTypeName = course.DishType.Name,
                 SkillLevelName = course.SkillLevel.Name
             };
+        }
+
+        public async Task<CourseDetailsViewModel> GetDetailsById(int id, string currentUserId = null)
+        {
+            var course = await _context.Courses
+                .Include(c => c.CourseCategory)
+                .Include(c => c.DishType)
+                .Include(c => c.SkillLevel)
+                .FirstOrDefaultAsync(c => c.CourseId == id);
+
+            var courseDetails = new CourseDetailsViewModel();
+            if (currentUserId == null)
+            {
+                courseDetails.IsOwner = false;
+                courseDetails.CanEnroll = false;
+                courseDetails.UserEnrollmentStatus = null;
+            }
+            else
+            {
+
+
+                courseDetails.IsOwner = await IsChefOwner(id, currentUserId);
+                courseDetails.CanEnroll = await HasAvailableSpots(id);
+                courseDetails.UserEnrollmentStatus = await GetEnrollmentStatus(id, currentUserId);
+            }
+            var chef = await _context.UserCourses
+                .Include(uc => uc.User)
+                .FirstOrDefaultAsync(uc => uc.CourseId == id && uc.Role == UserRoles.Chef.ToString());
+
+            courseDetails.ChefName = chef.User.FirstName + " " + chef.User.LastName;
+            courseDetails.ChefBio = chef.User.ShortBio;
+            courseDetails.StatusName = course.CourseStatus.ToString();
+            courseDetails.StatusBadgeClass = course.CourseStatus.ToString().ToLower();
+
+            courseDetails.CourseId = course.CourseId;
+            courseDetails.Title = course.Title;
+            courseDetails.Description = course.Description;
+            courseDetails.Price = course.Price;
+            courseDetails.MaxParticipants = course.MaxParticipants;
+            courseDetails.MainImageUrl = course.MainImageUrl;
+            courseDetails.StartDate = course.StartDate;
+            courseDetails.EndDate = course.EndDate;
+            courseDetails.CategoryId = course.CourseCategoryId;
+            courseDetails.DishTypeId = course.DishTypeId;
+            courseDetails.SkillLevelId = course.SkillLevelId;
+            courseDetails.CategoryName = course.CourseCategory.Name;
+            courseDetails.DishTypeName = course.DishType.Name;
+            courseDetails.SkillLevelName = course.SkillLevel.Name;
+            courseDetails.CurrentParticipants = await GetEnrolledStudentsCount(id);
+            courseDetails.Status = course.CourseStatus;
+
+
+            return courseDetails;
+
+
+        }
+
+        private async Task<string?> GetEnrollmentStatus(int courseId, string currentUserId)
+        {
+            var userCourse = await _context.UserCourses
+                .FirstOrDefaultAsync(uc => uc.CourseId == courseId && uc.UserId == currentUserId);
+
+            if (userCourse == null) return null;
+
+            return userCourse.Status.ToString();
         }
 
         public async Task<IEnumerable<CourseViewModel>> GetByChefId(string chefId)

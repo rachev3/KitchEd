@@ -35,37 +35,20 @@ namespace KitchEd.Controllers
         }
 
         // GET: /Course
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            Console.WriteLine("Index..........................................");
             var courses = await _courseService.GetActiveCourses();
             return View(courses);
         }
 
         // GET: /Course/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
-            var course = await _courseService.GetById(id);
-            if (course == null)
-            {
-                return NotFound();
-            }
-
-            // If user is authenticated, check enrollment status
-            if (User.Identity.IsAuthenticated)
-            {
-                var userId = _userManager.GetUserId(User);
-                ViewBag.IsEnrolled = await _userCourseService.IsStudentEnrolled(id, userId);
-
-                // If chef, get enrollments
-                if (IsChef && await _courseService.IsChefOwner(id, userId))
-                {
-                    ViewBag.Enrollments = await _userCourseService.GetCourseEnrollments(id);
-                    ViewBag.PendingEnrollments = await _userCourseService.GetPendingEnrollments(id);
-                }
-            }
-
-            return View(course);
+            var currentUserId = _userManager.GetUserId(User);
+            var details = await _courseService.GetDetailsById(id, currentUserId);
+            return View(details);
         }
 
         // GET: /Course/Create
@@ -115,6 +98,7 @@ namespace KitchEd.Controllers
             }
 
             var course = await _courseService.GetById(id);
+            Console.WriteLine(course.CategoryName);
             if (course == null)
             {
                 return NotFound();
@@ -125,12 +109,15 @@ namespace KitchEd.Controllers
                 return RedirectToHomeWithError("Не можете да редактирате активен курс.");
             }
 
-            ViewBag.Categories = await _categoryService.GetAll();
-            ViewBag.DishTypes = await _dishTypeService.GetAll();
-            ViewBag.SkillLevels = await _skillLevelService.GetAll();
+            var categories = await _categoryService.GetAll();
+            var dishTypes = await _dishTypeService.GetAll();
+            var skillLevels = await _skillLevelService.GetAll();
 
             var editModel = new EditCourseViewModel
             {
+                Categories = categories.ToList(),
+                DishTypes = dishTypes.ToList(),
+                SkillLevels = skillLevels.ToList(),
                 CourseId = course.CourseId,
                 Title = course.Title,
                 Description = course.Description,
@@ -139,9 +126,9 @@ namespace KitchEd.Controllers
                 MainImageUrl = course.MainImageUrl,
                 StartDate = course.StartDate,
                 EndDate = course.EndDate,
-                CategoryId = int.Parse(course.CategoryName),
-                DishTypeId = int.Parse(course.DishTypeName),
-                SkillLevelId = int.Parse(course.SkillLevelName)
+                CategoryId = course.CategoryId,
+                DishTypeId = course.DishTypeId,
+                SkillLevelId = course.SkillLevelId
             };
 
             return View(editModel);

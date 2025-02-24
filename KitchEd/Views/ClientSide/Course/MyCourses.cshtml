@@ -27,7 +27,8 @@
         <div class="row">
             <div class="col-md-3">
                 <div class="list-group" id="courseTabList" role="tablist">
-                    <a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="#pending" role="tab">
+                    <a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="#pending"
+                        role="tab">
                         <i class="fas fa-clock me-2"></i>Чакащи одобрение
                     </a>
                     <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#active" role="tab">
@@ -45,7 +46,9 @@
             <div class="col-md-9">
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="pending" role="tabpanel">
-                        @{var pendingCourses = Model.Where(c => c.Status == CourseStatus.Inactive);}
+                        @{
+                            var pendingCourses = Model.Where(c => c.Status == CourseStatus.Inactive);
+                        }
                         @if (!pendingCourses.Any())
                         {
                             <div class="alert alert-info">Нямате курсове чакащи одобрение.</div>
@@ -56,7 +59,15 @@
                                 @foreach (var course in pendingCourses)
                                 {
                                     <div class="list-group-item">
-                                        <p class="mb-1">@course.Description</p>
+                                        <div class="d-flex align-items-center">
+                                            <img src="@course.MainImageUrl" alt="" class="img-thumbnail me-2"
+                                                style="max-height: 200px; max-width: 200px; object-fit: cover;">
+                                            <div>
+                                                <h5 class="mb-1">@course.Title</h5>
+                                                <p class="mb-1">Начало: @course.StartDate.ToString("dd.MM.yyyy")</p>
+                                                <p class="mb-1">Край: @course.EndDate.ToString("dd.MM.yyyy")</p>
+                                            </div>
+                                        </div>
                                         <div class="d-flex justify-content-end gap-2 mt-2">
                                             <a asp-action="Edit" asp-route-id="@course.CourseId" class="btn btn-sm btn-warning">
                                                 <i class="fas fa-edit me-1"></i>Редактирай
@@ -72,7 +83,9 @@
                     </div>
 
                     <div class="tab-pane fade" id="active" role="tabpanel">
-                        @{var activeCourses = Model.Where(c => c.Status == CourseStatus.Active);}
+                        @{
+                            var activeCourses = Model.Where(c => c.Status == CourseStatus.Active);
+                        }
                         @if (!activeCourses.Any())
                         {
                             <div class="alert alert-info">Нямате активни курсове.</div>
@@ -85,11 +98,13 @@
                                     <div class="list-group-item">
                                         <div class="d-flex w-100 justify-content-between align-items-center">
                                             <h5 class="mb-1">@course.Title</h5>
-                                            <span class="badge bg-success">@course.CurrentParticipants/@course.MaxParticipants участника</span>
+                                            <span class="badge bg-success">@course.CurrentParticipants/@course.MaxParticipants
+                                                участника</span>
                                         </div>
                                         <p class="mb-1">Начало: @course.StartDate.ToString("dd.MM.yyyy")</p>
                                         <div class="d-flex justify-content-end gap-2 mt-2">
-                                            <a asp-action="Enrollments" asp-route-id="@course.CourseId" class="btn btn-sm btn-primary">
+                                            <a asp-action="Enrollments" asp-route-id="@course.CourseId"
+                                                class="btn btn-sm btn-primary">
                                                 <i class="fas fa-users me-1"></i>Записвания
                                             </a>
                                             <a asp-action="Details" asp-route-id="@course.CourseId" class="btn btn-sm btn-info">
@@ -103,7 +118,9 @@
                     </div>
 
                     <div class="tab-pane fade" id="ongoing" role="tabpanel">
-                        @{var ongoingCourses = Model.Where(c => c.Status == CourseStatus.Ongoing);}
+                        @{
+                            var ongoingCourses = Model.Where(c => c.Status == CourseStatus.Ongoing);
+                        }
                         @if (!ongoingCourses.Any())
                         {
                             <div class="alert alert-info">Нямате текущи курсове.</div>
@@ -140,7 +157,9 @@
                     </div>
 
                     <div class="tab-pane fade" id="completed" role="tabpanel">
-                        @{var completedCourses = Model.Where(c => c.Status == CourseStatus.Completed);}
+                        @{
+                            var completedCourses = Model.Where(c => c.Status == CourseStatus.Completed);
+                        }
                         @if (!completedCourses.Any())
                         {
                             <div class="alert alert-info">Нямате завършени курсове.</div>
@@ -188,7 +207,7 @@
         }
 
         .list-group-item {
-            border: 1px solid rgba(0,0,0,.125);
+            border: 1px solid rgba(0, 0, 0, .125);
             margin-bottom: 0.5rem;
             border-radius: 0.25rem !important;
         }
@@ -197,7 +216,7 @@
             background: white;
             padding: 20px;
             border-radius: 0.25rem;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         #courseTabList .list-group-item {
