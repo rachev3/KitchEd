@@ -19,7 +19,7 @@ namespace KitchEd.Controllers
 
         protected bool HasAccessToResource(string userId)
         {
-            return IsAdmin || User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value == userId;
+            return User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value == userId;
         }
     }
 
@@ -46,4 +46,4 @@ namespace KitchEd.Controllers
             Roles = UserRoles.Student.ToString();
         }
     }
-} 
+}

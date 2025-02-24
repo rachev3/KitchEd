@@ -11,11 +11,17 @@ namespace KitchEd.Data.Services.Implementations
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<User> _userManager;
+        private readonly ICourseCategoryService _categoryService;
+        private readonly IDishTypeService _dishTypeService;
+        private readonly ISkillLevelService _skillLevelService;
 
-        public CourseService(ApplicationDbContext context, UserManager<User> userManager)
+        public CourseService(ApplicationDbContext context, UserManager<User> userManager, ICourseCategoryService categoryService, IDishTypeService dishTypeService, ISkillLevelService skillLevelService)
         {
             _context = context;
             _userManager = userManager;
+            _categoryService = categoryService;
+            _dishTypeService = dishTypeService;
+            _skillLevelService = skillLevelService;
         }
 
         // Create
@@ -187,6 +193,37 @@ namespace KitchEd.Data.Services.Implementations
 
 
         }
+
+        public async Task<EditCourseViewModel> GetByIdForEdit(int id)
+        {
+            var course = await _context.Courses.FindAsync(id);
+            if (course == null) return null;
+
+            var categories = await _categoryService.GetAll();
+            var dishTypes = await _dishTypeService.GetAll();
+            var skillLevels = await _skillLevelService.GetAll();
+
+            var editModel = new EditCourseViewModel
+            {
+                Categories = categories.ToList(),
+                DishTypes = dishTypes.ToList(),
+                SkillLevels = skillLevels.ToList(),
+                CourseId = course.CourseId,
+                Title = course.Title,
+                Description = course.Description,
+                Price = course.Price,
+                MaxParticipants = course.MaxParticipants,
+                MainImageUrl = course.MainImageUrl,
+                StartDate = course.StartDate,
+                EndDate = course.EndDate,
+                CategoryId = course.CourseCategoryId,
+                DishTypeId = course.DishTypeId,
+                SkillLevelId = course.SkillLevelId
+            };
+
+            return editModel;
+        }
+
 
         private async Task<string?> GetEnrollmentStatus(int courseId, string currentUserId)
         {

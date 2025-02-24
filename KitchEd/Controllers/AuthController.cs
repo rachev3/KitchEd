@@ -11,13 +11,11 @@ namespace KitchEd.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager)
+        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _roleManager = roleManager;
         }
 
         [HttpGet]
@@ -33,19 +31,15 @@ namespace KitchEd.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("Model state is not valid");
                 return View(model);
             }
 
-            // Only allow Chef and Student registrations
             if (model.Role == UserRoles.Admin)
             {
-                Console.WriteLine("Model role is admin");
                 TempData["ErrorMessage"] = "Не можете да се регистрирате като администратор.";
                 return View(model);
             }
@@ -66,7 +60,7 @@ namespace KitchEd.Controllers
             {
                 // Assign role
                 var roleResult = await _userManager.AddToRoleAsync(user, model.Role.ToString());
-                
+
                 if (roleResult.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
@@ -105,7 +99,6 @@ namespace KitchEd.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
@@ -114,12 +107,12 @@ namespace KitchEd.Controllers
             }
 
             var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, lockoutOnFailure: false);
-            
+
             if (result.Succeeded)
             {
                 return RedirectToAction("Index", "Home");
             }
-            
+
             ModelState.AddModelError(string.Empty, "Невалидно потребителско име или парола.");
             return View(model);
         }

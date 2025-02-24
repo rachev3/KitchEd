@@ -14,6 +14,7 @@ namespace KitchEd.Data.Services.Interfaces
         Task<IEnumerable<CourseViewModel>> GetAllNeedApproval();
         Task<CourseViewModel> GetById(int id);
         Task<CourseDetailsViewModel> GetDetailsById(int id, string currentUserId);
+        Task<EditCourseViewModel> GetByIdForEdit(int id);
         Task<IEnumerable<CourseViewModel>> GetByChefId(string chefId);
         Task<IEnumerable<CourseViewModel>> GetActiveCourses();
 

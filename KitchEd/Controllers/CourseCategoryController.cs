@@ -28,21 +28,20 @@ namespace KitchEd.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CourseCategoryViewModel categoryVM)
+        public async Task<IActionResult> Create(CourseCategoryViewModel viewModel)
         {
-            if (!ModelState.IsValid) return View(categoryVM);
+            if (!ModelState.IsValid) return View(viewModel);
 
             try
             {
-                await _courseCategoryService.Create(categoryVM);
+                await _courseCategoryService.Create(viewModel);
                 TempData["SuccessMessage"] = "Категорията е създадена успешно!";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                return View(categoryVM);
+                return View(viewModel);
             }
         }
 
@@ -61,21 +60,20 @@ namespace KitchEd.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, CourseCategoryViewModel categoryVM)
+        public async Task<IActionResult> Edit(int id, CourseCategoryViewModel viewModel)
         {
-            if (!ModelState.IsValid) return View(categoryVM);
+            if (!ModelState.IsValid) return View(viewModel);
 
             try
             {
-                await _courseCategoryService.Update(id, categoryVM);
+                await _courseCategoryService.Update(id, viewModel);
                 TempData["SuccessMessage"] = "Категорията е обновена успешно!";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                return View(categoryVM);
+                return View(viewModel);
             }
         }
 

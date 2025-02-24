@@ -74,15 +74,17 @@ namespace KitchEd.Controllers
 
         // POST: /Course/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [ChefOnly]
         public async Task<IActionResult> Create(CreateCourseViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Categories = await _categoryService.GetAll();
-                ViewBag.DishTypes = await _dishTypeService.GetAll();
-                ViewBag.SkillLevels = await _skillLevelService.GetAll();
+                var categories = await _categoryService.GetAll();
+                var dishTypes = await _dishTypeService.GetAll();
+                var skillLevels = await _skillLevelService.GetAll();
+                model.Categories = categories.ToList();
+                model.DishTypes = dishTypes.ToList();
+                model.SkillLevels = skillLevels.ToList();
                 return View(model);
             }
 
@@ -93,21 +95,20 @@ namespace KitchEd.Controllers
             return RedirectToAction(nameof(MyCourses));
         }
 
-        // GET: /Course/Edit/5
         [ChefOnly]
         public async Task<IActionResult> Edit(int id)
         {
             var userId = _userManager.GetUserId(User);
-            if (!await _courseService.IsChefOwner(id, userId))
+            if (!HasAccessToResource(userId))
             {
                 return RedirectToHomeWithError("Нямате достъп до този курс.");
             }
 
             var course = await _courseService.GetById(id);
-            Console.WriteLine(course.CategoryName);
+
             if (course == null)
             {
-                return NotFound();
+                return RedirectToHomeWithError("Този курс не съществува.");
             }
 
             if (course.Status == CourseStatus.Active)
@@ -115,27 +116,7 @@ namespace KitchEd.Controllers
                 return RedirectToHomeWithError("Не можете да редактирате активен курс.");
             }
 
-            var categories = await _categoryService.GetAll();
-            var dishTypes = await _dishTypeService.GetAll();
-            var skillLevels = await _skillLevelService.GetAll();
-
-            var editModel = new EditCourseViewModel
-            {
-                Categories = categories.ToList(),
-                DishTypes = dishTypes.ToList(),
-                SkillLevels = skillLevels.ToList(),
-                CourseId = course.CourseId,
-                Title = course.Title,
-                Description = course.Description,
-                Price = course.Price,
-                MaxParticipants = course.MaxParticipants,
-                MainImageUrl = course.MainImageUrl,
-                StartDate = course.StartDate,
-                EndDate = course.EndDate,
-                CategoryId = course.CategoryId,
-                DishTypeId = course.DishTypeId,
-                SkillLevelId = course.SkillLevelId
-            };
+            var editModel = await _courseService.GetByIdForEdit(id);
 
             return View(editModel);
         }
@@ -148,21 +129,19 @@ namespace KitchEd.Controllers
         {
             if (id != model.CourseId)
             {
-                return NotFound();
+                return RedirectToHomeWithError("Невалиден курс.");
             }
 
             var userId = _userManager.GetUserId(User);
-            if (!await _courseService.IsChefOwner(id, userId))
+            if (!HasAccessToResource(userId))
             {
                 return RedirectToHomeWithError("Нямате достъп до този курс.");
             }
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Categories = await _categoryService.GetAll();
-                ViewBag.DishTypes = await _dishTypeService.GetAll();
-                ViewBag.SkillLevels = await _skillLevelService.GetAll();
-                return View(model);
+                var editModel = await _courseService.GetByIdForEdit(id);
+                return View(editModel);
             }
 
             await _courseService.Update(id, model);
@@ -218,7 +197,7 @@ namespace KitchEd.Controllers
                 return RedirectToHomeWithError(ex.Message);
             }
 
-            return RedirectToAction(nameof(Details), new { id = model.CourseId });
+            return RedirectToAction(nameof(MyEnrollments));
         }
 
         [HttpGet]
@@ -249,7 +228,7 @@ namespace KitchEd.Controllers
             model.NewStatus = UserCourseStatus.Approved;
             await _userCourseService.UpdateStudentStatus(model);
             TempData["SuccessMessage"] = "Ученикът е одобрен успешно.";
-            return RedirectToAction(nameof(Details), new { id = model.CourseId });
+            return RedirectToAction(nameof(Enrollments), new { courseId = model.CourseId });
         }
 
         // POST: /Course/RejectStudent
@@ -267,7 +246,7 @@ namespace KitchEd.Controllers
             model.NewStatus = UserCourseStatus.Rejected;
             await _userCourseService.UpdateStudentStatus(model);
             TempData["SuccessMessage"] = "Ученикът е отхвърлен успешно.";
-            return RedirectToAction(nameof(Details), new { id = model.CourseId });
+            return RedirectToAction(nameof(Enrollments), new { id = model.CourseId });
         }
 
         // GET: /Course/MyEnrollments
