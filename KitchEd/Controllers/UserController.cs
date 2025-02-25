@@ -14,9 +14,22 @@ namespace KitchEd.Controllers
             _userService = userService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchTerm)
         {
+            ViewData["CurrentFilter"] = searchTerm;
+
             var users = await _userService.GetAllUsers();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                searchTerm = searchTerm.ToLower();
+                users = users.Where(u =>
+                    u.FirstName.ToLower().Contains(searchTerm) ||
+                    u.LastName.ToLower().Contains(searchTerm) ||
+                    u.Username.ToLower().Contains(searchTerm)
+                ).ToList();
+            }
+
             return View(users);
         }
 

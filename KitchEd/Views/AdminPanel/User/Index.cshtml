@@ -2,6 +2,9 @@
 
 @{
     ViewData["Title"] = "Потребители";
+    var chefCount = Model.Count(u => u.Role == UserRoles.Chef);
+    var studentCount = Model.Count(u => u.Role == UserRoles.Student);
+    var totalUsers = Model.Count();
 }
 
 <div class="admin-content-header">
@@ -9,6 +12,79 @@
         <i class="fas fa-users me-2"></i>
         Потребители
     </h1>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-muted mb-0">Общо потребители</h6>
+                        <h2 class="mt-2 mb-0">@totalUsers</h2>
+                    </div>
+                    <div class="bg-primary rounded-circle p-3 text-white">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-muted mb-0">Шеф-инструктори</h6>
+                        <h2 class="mt-2 mb-0">@chefCount</h2>
+                    </div>
+                    <div class="bg-success rounded-circle p-3 text-white">
+                        <i class="fas fa-utensils fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-muted mb-0">Студенти</h6>
+                        <h2 class="mt-2 mb-0">@studentCount</h2>
+                    </div>
+                    <div class="bg-info rounded-circle p-3 text-white">
+                        <i class="fas fa-graduation-cap fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search Bar -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" asp-action="Index" class="row g-3">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" name="searchTerm" class="form-control"
+                        placeholder="Търсене по име, фамилия или потребителско име..."
+                        value="@ViewData["CurrentFilter"]">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary me-2">
+                    <i class="fas fa-search me-1"></i> Търси
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-redo me-1"></i> Изчисти
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
 
 <div class="admin-table-wrapper">
@@ -40,15 +116,14 @@
                         </td>
                         <td>
                             <div class="btn-group" role="group">
-                                <a asp-action="Edit" asp-route-id="@user.Id" 
-                                   class="btn btn-outline-primary btn-sm">
+                                <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-outline-primary btn-sm">
                                     <i class="fas fa-edit me-1"></i>
                                     Редактирай
                                 </a>
                                 @if (user.Role != UserRoles.Admin)
                                 {
-                                    <button type="button" class="btn btn-outline-danger btn-sm" 
-                                            onclick="confirmDelete('@user.Id', '@user.FullName')">
+                                    <button type="button" class="btn btn-outline-danger btn-sm"
+                                        onclick="confirmDelete('@user.Id', '@user.FullName')">
                                         <i class="fas fa-trash-alt me-1"></i>
                                         Изтрий
                                     </button>
