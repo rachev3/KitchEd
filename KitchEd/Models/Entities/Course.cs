@@ -33,8 +33,8 @@ namespace KitchEd.Models.Entities
 
 
 
-        public ICollection<UserCourse> UserCourses { get; set; }
-        public List<CourseImage> CourseImages { get; set; }
+        public ICollection<UserCourse>? UserCourses { get; set; }
+        public List<CourseImage>? CourseImages { get; set; }
 
     }
 }

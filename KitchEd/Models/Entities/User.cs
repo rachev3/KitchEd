@@ -7,6 +7,6 @@ namespace KitchEd.Models.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string ShortBio { get; set; }
-        public ICollection<UserCourse> UserCourses { get; set; } = [];
+        public ICollection<UserCourse>? UserCourses { get; set; }
     }
 }

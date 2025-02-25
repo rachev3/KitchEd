@@ -16,10 +16,10 @@ namespace KitchEd.Models.Entities
 
         public string UserId { get; set; }
         [ForeignKey(nameof(UserId))]
-        public User User { get; set; }
+        public virtual User? User { get; set; }
         public int CourseId { get; set; }
         [ForeignKey(nameof(CourseId))]
-        public Course Course { get; set; }
+        public virtual Course? Course { get; set; }
     }
 
 }
