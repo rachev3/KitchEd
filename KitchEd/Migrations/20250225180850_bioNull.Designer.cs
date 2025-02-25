@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace KitchEd.Data.Migrations
+namespace KitchEd.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250220183159_DateTime")]
-    partial class DateTime
+    [Migration("20250225180850_bioNull")]
+    partial class bioNull
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

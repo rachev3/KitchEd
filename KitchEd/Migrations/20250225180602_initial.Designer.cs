@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace KitchEd.Data.Migrations
+namespace KitchEd.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250218135029_Models")]
-    partial class Models
+    [Migration("20250225180602_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,8 +46,8 @@ namespace KitchEd.Data.Migrations
                     b.Property<int>("DishTypeId")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("EndDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("MainImageUrl")
                         .IsRequired()
@@ -62,8 +62,8 @@ namespace KitchEd.Data.Migrations
                     b.Property<int>("SkillLevelId")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("StartDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
                         .IsRequired()

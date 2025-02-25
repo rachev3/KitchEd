@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace KitchEd.Data.Migrations
+namespace KitchEd.Migrations
 {
     /// <inheritdoc />
-    public partial class DateTime : Migration
+    public partial class bioNull : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

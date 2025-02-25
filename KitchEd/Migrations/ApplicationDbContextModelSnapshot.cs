@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace KitchEd.Data.Migrations
+namespace KitchEd.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -204,7 +204,6 @@ namespace KitchEd.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ShortBio")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")
