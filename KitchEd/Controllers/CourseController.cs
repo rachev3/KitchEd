@@ -16,6 +16,7 @@ namespace KitchEd.Controllers
         private readonly IDishTypeService _dishTypeService;
         private readonly ISkillLevelService _skillLevelService;
         private readonly IUserCourseService _userCourseService;
+        private readonly ICourseImageService _courseImageService;
         private readonly UserManager<User> _userManager;
 
         public CourseController(
@@ -24,6 +25,7 @@ namespace KitchEd.Controllers
             IDishTypeService dishTypeService,
             ISkillLevelService skillLevelService,
             IUserCourseService userCourseService,
+            ICourseImageService courseImageService,
             UserManager<User> userManager)
         {
             _courseService = courseService;
@@ -32,6 +34,7 @@ namespace KitchEd.Controllers
             _skillLevelService = skillLevelService;
             _userCourseService = userCourseService;
             _userManager = userManager;
+            _courseImageService = courseImageService;
         }
 
         // GET: /Course
@@ -53,7 +56,9 @@ namespace KitchEd.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var currentUserId = _userManager.GetUserId(User);
+            var courseImages = await _courseImageService.GetAllCourseImages(id);
             var details = await _courseService.GetDetailsById(id, currentUserId);
+            details.CourseImages = courseImages.ToList();
             return View(details);
         }
 

@@ -1,4 +1,5 @@
 using KitchEd.Data.Enums;
+using KitchEd.Models.ViewModels.CourseImage;
 
 namespace KitchEd.Models.ViewModels.Course;
 
@@ -11,6 +12,8 @@ public class CourseDetailsViewModel : CourseViewModel
     public string? UserEnrollmentStatus { get; set; }
     public string StatusName { get; set; } = null!;
     public string StatusBadgeClass { get; set; } = null!;
+
+    public List<CourseImageViewModel>? CourseImages { get; set; }
 
     public string GetStatusBadgeClass()
     {

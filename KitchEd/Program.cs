@@ -51,6 +51,7 @@ builder.Services.AddScoped<IUserCourseService, UserCourseService>();
 builder.Services.AddScoped<ISkillLevelService, SkillLevelService>();
 builder.Services.AddScoped<IDishTypeService, DishTypeService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICourseImageService, CourseImageService>();
 
 var app = builder.Build();
 
