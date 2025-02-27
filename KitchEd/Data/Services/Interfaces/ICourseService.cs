@@ -7,7 +7,7 @@ namespace KitchEd.Data.Services.Interfaces
     public interface ICourseService
     {
         // Create
-        Task<Course> Create(CreateCourseViewModel model, string chefId);
+        Task<int> Create(CreateCourseViewModel model, string chefId);
 
         // Read
         Task<IEnumerable<CourseViewModel>> GetAll();

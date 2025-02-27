@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using KitchEd.Data.Enums;
 using KitchEd.Models.ViewModels.CourseCategory;
+using KitchEd.Models.ViewModels.CourseImage;
 using KitchEd.Models.ViewModels.DishType;
 using KitchEd.Models.ViewModels.SkillLevel;
 
@@ -41,6 +42,9 @@ public class CreateCourseViewModel : CourseViewModel
 
     [Display(Name = "URL на основната снимка")]
     public override string MainImageUrl { get; set; } = null!;
+
+    [Display(Name = "Допълнителни снимки")]
+    public List<string> AdditionalImageUrls { get; set; } = new List<string>();
 
     public List<CourseCategoryViewModel> Categories { get; set; } = new List<CourseCategoryViewModel>();
     public List<DishTypeViewModel> DishTypes { get; set; } = new List<DishTypeViewModel>();

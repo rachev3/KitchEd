@@ -7,7 +7,6 @@ namespace KitchEd.Data.Services.Interfaces
         Task<IEnumerable<CourseImageViewModel>> GetAllCourseImages(int courseId);
         Task<CourseImageViewModel> GetById(int id);
         Task Create(CourseImageViewModel viewModel);
-        Task Update(int id, CourseImageViewModel viewModel);
         Task Delete(int id);
     }
 }

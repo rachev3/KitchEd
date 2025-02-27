@@ -113,6 +113,49 @@
                             }
                         </div>
 
+                        <div class="mb-3">
+                            <label asp-for="AdditionalImageUrls" class="form-label">Допълнителни снимки</label>
+
+                            @if (Model.ExistingCourseImages != null && Model.ExistingCourseImages.Any())
+                            {
+                                <div class="mb-3">
+                                    <small class="text-muted">Текущи допълнителни снимки:</small>
+                                    <div class="row mt-2">
+                                        @foreach (var image in Model.ExistingCourseImages)
+                                        {
+                                            <div class="col-md-4 mb-2">
+                                                <div class="card">
+                                                    <img src="@image.ImageUrl" class="card-img-top" alt="Course Image"
+                                                        style="height: 100px; object-fit: cover;">
+                                                    <div class="card-body p-2 text-center">
+                                                        <a href="#" class="btn btn-sm btn-outline-danger delete-image"
+                                                            data-image-id="@image.Id">
+                                                            <i class="fas fa-trash"></i> Изтрий
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            <div id="additionalImagesContainer">
+                                <!-- Initial image input field -->
+                                <div class="input-group mb-2">
+                                    <input type="url" name="AdditionalImageUrls[0]" class="form-control"
+                                        placeholder="URL на нова допълнителна снимка" />
+                                    <button type="button" class="btn btn-outline-danger remove-image"
+                                        style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <button type="button" id="addImageBtn" class="btn btn-outline-primary btn-sm mt-2">
+                                <i class="fas fa-plus me-1"></i> Добави още снимка
+                            </button>
+                        </div>
+
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <a asp-action="Details" asp-route-id="@Model.CourseId" class="btn btn-secondary">
                                 <i class="fas fa-times me-2"></i>Отказ
@@ -137,6 +180,75 @@
         // Update EndDate min value when StartDate changes
         document.getElementById('StartDate').addEventListener('change', function () {
             document.getElementById('EndDate').setAttribute('min', this.value);
+        });
+
+        // Handle additional images
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.getElementById('additionalImagesContainer');
+            const addButton = document.getElementById('addImageBtn');
+            let imageCount = 1; // Start from 1 because we already have one input
+
+            addButton.addEventListener('click', function () {
+                const newGroup = document.createElement('div');
+                newGroup.className = 'input-group mb-2';
+                newGroup.innerHTML = `
+                            <input type="url" name="AdditionalImageUrls[${imageCount}]" class="form-control" placeholder="URL на нова допълнителна снимка" />
+                            <button type="button" class="btn btn-outline-danger remove-image">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                container.appendChild(newGroup);
+
+                // Show the remove button for the first input if we have more than one input
+                if (imageCount === 1) {
+                    container.querySelector('.remove-image').style.display = 'block';
+                }
+
+                imageCount++;
+            });
+
+            // Event delegation for remove buttons
+            container.addEventListener('click', function (e) {
+                if (e.target.closest('.remove-image')) {
+                    e.target.closest('.input-group').remove();
+
+                    // If only one input remains, hide its remove button
+                    const inputs = container.querySelectorAll('.input-group');
+                    if (inputs.length === 1) {
+                        inputs[0].querySelector('.remove-image').style.display = 'none';
+                    }
+                }
+            });
+
+            // Handle delete existing image
+            document.querySelectorAll('.delete-image').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    if (confirm('Сигурни ли сте, че искате да изтриете тази снимка?')) {
+                        const imageId = this.getAttribute('data-image-id');
+                        // Send AJAX request to delete the image
+                        fetch(`/Course/DeleteImage/${imageId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                            }
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    // Remove the image card from the UI
+                                    this.closest('.col-md-4').remove();
+                                } else {
+                                    alert('Възникна грешка при изтриването на снимката.');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('Възникна грешка при изтриването на снимката.');
+                            });
+                    }
+                });
+            });
         });
     </script>
 }

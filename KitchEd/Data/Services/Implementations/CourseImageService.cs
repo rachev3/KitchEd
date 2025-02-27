@@ -63,16 +63,5 @@ namespace KitchEd.Data.Services.Implementations
 
         }
 
-        public async Task Update(int id, CourseImageViewModel viewModel)
-        {
-            var courseImage = await _context.CourseImages.FindAsync(id);
-            if (courseImage == null)
-            {
-                throw new Exception("Course image not found");
-            }
-            courseImage.ImageUrl = viewModel.ImageUrl;
-            await _context.SaveChangesAsync();
-        }
-
     }
 }

@@ -25,7 +25,7 @@ namespace KitchEd.Data.Services.Implementations
         }
 
         // Create
-        public async Task<Course> Create(CreateCourseViewModel model, string chefId)
+        public async Task<int> Create(CreateCourseViewModel model, string chefId)
         {
             var course = new Course
             {
@@ -56,7 +56,7 @@ namespace KitchEd.Data.Services.Implementations
             await _context.UserCourses.AddAsync(userCourse);
             await _context.SaveChangesAsync();
 
-            return course;
+            return course.CourseId;
         }
 
         // Read
@@ -196,7 +196,10 @@ namespace KitchEd.Data.Services.Implementations
 
         public async Task<EditCourseViewModel> GetByIdForEdit(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
+            var course = await _context.Courses
+                .Include(c => c.CourseImages)
+                .FirstOrDefaultAsync(c => c.CourseId == id);
+
             if (course == null) return null;
 
             var categories = await _categoryService.GetAll();
@@ -218,7 +221,14 @@ namespace KitchEd.Data.Services.Implementations
                 EndDate = course.EndDate,
                 CategoryId = course.CourseCategoryId,
                 DishTypeId = course.DishTypeId,
-                SkillLevelId = course.SkillLevelId
+                SkillLevelId = course.SkillLevelId,
+                Status = course.CourseStatus,
+                ExistingCourseImages = course.CourseImages?.Select(ci => new Models.ViewModels.CourseImage.CourseImageViewModel
+                {
+                    Id = ci.CourseImageId,
+                    ImageUrl = ci.ImageUrl,
+                    CourseId = ci.CourseId
+                }).ToList() ?? new List<Models.ViewModels.CourseImage.CourseImageViewModel>()
             };
 
             return editModel;
@@ -237,7 +247,7 @@ namespace KitchEd.Data.Services.Implementations
 
         public async Task<IEnumerable<CourseViewModel>> GetByChefId(string chefId)
         {
-            return await _context.UserCourses
+            var courses = await _context.UserCourses
                 .Where(uc => uc.UserId == chefId && uc.Role == UserRoles.Chef.ToString())
                 .Include(uc => uc.Course)
                 .ThenInclude(c => c.CourseCategory)
@@ -261,6 +271,14 @@ namespace KitchEd.Data.Services.Implementations
                     SkillLevelName = uc.Course.SkillLevel.Name
                 })
                 .ToListAsync();
+
+            // Get enrolled students count for each course
+            foreach (var course in courses)
+            {
+                course.CurrentParticipants = await GetEnrolledStudentsCount(course.CourseId);
+            }
+
+            return courses;
         }
 
         public async Task<IEnumerable<CourseViewModel>> GetActiveCourses()

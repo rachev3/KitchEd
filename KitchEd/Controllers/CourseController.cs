@@ -94,7 +94,20 @@ namespace KitchEd.Controllers
             }
 
             var userId = _userManager.GetUserId(User);
-            await _courseService.Create(model, userId);
+            var courseId = await _courseService.Create(model, userId);
+
+            // Save additional images
+            if (model.AdditionalImageUrls != null && model.AdditionalImageUrls.Count > 0)
+            {
+                foreach (var imageUrl in model.AdditionalImageUrls.Where(url => !string.IsNullOrWhiteSpace(url)))
+                {
+                    await _courseImageService.Create(new Models.ViewModels.CourseImage.CourseImageViewModel
+                    {                                                                                                             
+                        ImageUrl = imageUrl,
+                        CourseId = courseId
+                    });
+                }
+            }
 
             TempData["SuccessMessage"] = "Курсът е създаден успешно и очаква одобрение от администратор.";
             return RedirectToAction(nameof(MyCourses));
@@ -150,6 +163,20 @@ namespace KitchEd.Controllers
             }
 
             await _courseService.Update(id, model);
+
+            // Save additional images
+            if (model.AdditionalImageUrls != null && model.AdditionalImageUrls.Count > 0)
+            {
+                foreach (var imageUrl in model.AdditionalImageUrls.Where(url => !string.IsNullOrWhiteSpace(url)))
+                {
+                    await _courseImageService.Create(new Models.ViewModels.CourseImage.CourseImageViewModel
+                    {
+                        ImageUrl = imageUrl,
+                        CourseId = id
+                    });
+                }
+            }
+
             TempData["SuccessMessage"] = "Курсът е обновен успешно.";
             return RedirectToAction(nameof(MyCourses));
         }
@@ -178,6 +205,28 @@ namespace KitchEd.Controllers
             await _courseService.Delete(id);
             TempData["SuccessMessage"] = "Курсът е изтрит успешно.";
             return RedirectToAction(nameof(MyCourses));
+        }
+
+        // POST: /Course/DeleteImage/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ChefOnly]
+        public async Task<IActionResult> DeleteImage(int id)
+        {
+            var image = await _courseImageService.GetById(id);
+            if (image == null)
+            {
+                return NotFound();
+            }
+
+            var userId = _userManager.GetUserId(User);
+            if (!await _courseService.IsChefOwner(image.CourseId, userId))
+            {
+                return Forbid();
+            }
+
+            await _courseImageService.Delete(id);
+            return Ok();
         }
 
         // POST: /Course/Enroll/5
