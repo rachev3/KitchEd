@@ -50,5 +50,7 @@ namespace KitchEd.Models.ViewModels.Auth
         [Required(ErrorMessage = "Моля, изберете роля")]
         [Display(Name = "Роля")]
         public UserRoles Role { get; set; }
+
+        public string RecaptchaResponse { get; set; }
     }
 }

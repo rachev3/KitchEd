@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using KitchEd.Models.Entities;
+using KitchEd.Services;
 
 namespace KitchEd.Controllers
 {
@@ -11,11 +12,19 @@ namespace KitchEd.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly RecaptchaService _recaptchaService;
+        private readonly IConfiguration _configuration;
 
-        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AuthController(
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            RecaptchaService recaptchaService,
+            IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _recaptchaService = recaptchaService;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -26,6 +35,8 @@ namespace KitchEd.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
+            ViewBag.RecaptchaSiteKey = _configuration["reCAPTCHA:SiteKey"];
             return View();
         }
 
@@ -33,6 +44,16 @@ namespace KitchEd.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
+            ViewBag.RecaptchaSiteKey = _configuration["reCAPTCHA:SiteKey"];
+
+            // Verify reCAPTCHA
+            var recaptchaVerified = await _recaptchaService.VerifyRecaptchaAsync(model.RecaptchaResponse);
+            if (!recaptchaVerified)
+            {
+                ModelState.AddModelError(string.Empty, "Моля, потвърдете, че не сте робот.");
+                return View(model);
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -94,6 +115,8 @@ namespace KitchEd.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
+            ViewBag.RecaptchaSiteKey = _configuration["reCAPTCHA:SiteKey"];
             return View();
         }
 
@@ -101,6 +124,16 @@ namespace KitchEd.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
+            ViewBag.RecaptchaSiteKey = _configuration["reCAPTCHA:SiteKey"];
+
+            // Verify reCAPTCHA
+            var recaptchaVerified = await _recaptchaService.VerifyRecaptchaAsync(model.RecaptchaResponse);
+            if (!recaptchaVerified)
+            {
+                ModelState.AddModelError(string.Empty, "Моля, потвърдете, че не сте робот.");
+                return View(model);
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(model);

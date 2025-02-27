@@ -80,8 +80,10 @@
                 </div>
 
                 <div class="form-floating mb-3">
-                    <textarea asp-for="ShortBio" class="form-control" placeholder="Кратка биография" style="height: 100px"></textarea>
-                    <label asp-for="ShortBio"><i class="fas fa-book-open me-2"></i>Кратка биография (незадължително)</label>
+                    <textarea asp-for="ShortBio" class="form-control" placeholder="Кратка биография"
+                        style="height: 100px"></textarea>
+                    <label asp-for="ShortBio"><i class="fas fa-book-open me-2"></i>Кратка биография
+                        (незадължително)</label>
                     <span asp-validation-for="ShortBio" class="text-danger"></span>
                 </div>
 
@@ -95,11 +97,21 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-3">
-                            <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Повторете паролата" />
+                            <input asp-for="ConfirmPassword" type="password" class="form-control"
+                                placeholder="Повторете паролата" />
                             <label asp-for="ConfirmPassword"><i class="fas fa-lock me-2"></i>Повторете паролата</label>
                             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
                     </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="g-recaptcha" data-sitekey="@ViewBag.RecaptchaSiteKey"></div>
+                    @if (!ViewData.ModelState.IsValid && ViewData.ModelState[""].Errors.Any(e =>
+                                        e.ErrorMessage.Contains("робот")))
+                    {
+                        <span class="text-danger">Моля, потвърдете, че не сте робот.</span>
+                    }
                 </div>
 
                 <button type="submit" class="btn btn-primary w-100 mb-3">
@@ -116,7 +128,10 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script>
         // Enable client-side validation
         $(document).ready(function () {
@@ -142,6 +157,23 @@
                         required: false
                     }
                 }
+            });
+
+            // Add reCAPTCHA validation
+            $('form').on('submit', function (e) {
+                var recaptchaResponse = grecaptcha.getResponse();
+                if (!recaptchaResponse) {
+                    e.preventDefault();
+                    alert('Моля, потвърдете, че не сте робот.');
+                    return false;
+                }
+
+                // Add the recaptcha response to a hidden field
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'RecaptchaResponse';
+                input.value = recaptchaResponse;
+                this.appendChild(input);
             });
         });
     </script>

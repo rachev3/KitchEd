@@ -2,6 +2,7 @@ using KitchEd.Data;
 using KitchEd.Data.Services.Implementations;
 using KitchEd.Data.Services.Interfaces;
 using KitchEd.Models.Entities;
+using KitchEd.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +29,10 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 builder.Services.AddScoped<RoleInitializationService>();
 builder.Services.AddScoped<AdminInitializationService>();
 
+// Register HttpClient and RecaptchaService
+builder.Services.AddHttpClient();
+
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
@@ -52,6 +57,7 @@ builder.Services.AddScoped<ISkillLevelService, SkillLevelService>();
 builder.Services.AddScoped<IDishTypeService, DishTypeService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICourseImageService, CourseImageService>();
+builder.Services.AddScoped<RecaptchaService>();
 
 var app = builder.Build();
 

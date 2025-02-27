@@ -41,6 +41,15 @@
                     <label asp-for="RememberMe" class="form-check-label">Запомни ме</label>
                 </div>
 
+                <div class="mb-3">
+                    <div class="g-recaptcha" data-sitekey="@ViewBag.RecaptchaSiteKey"></div>
+                    @if (!ViewData.ModelState.IsValid && ViewData.ModelState[""].Errors.Any(e =>
+                                        e.ErrorMessage.Contains("робот")))
+                    {
+                        <span class="text-danger">Моля, потвърдете, че не сте робот.</span>
+                    }
+                </div>
+
                 <button type="submit" class="btn btn-primary w-100 mb-3">
                     <i class="fas fa-sign-in-alt me-2"></i>Вход
                 </button>
@@ -55,5 +64,25 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+        document.querySelector('form').addEventListener('submit', function (e) {
+            var recaptchaResponse = grecaptcha.getResponse();
+            if (!recaptchaResponse) {
+                e.preventDefault();
+                alert('Моля, потвърдете, че не сте робот.');
+                return false;
+            }
+
+            // Add the recaptcha response to a hidden field
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'RecaptchaResponse';
+            input.value = recaptchaResponse;
+            this.appendChild(input);
+        });
+    </script>
 }

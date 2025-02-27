@@ -15,5 +15,7 @@ namespace KitchEd.Models.ViewModels.Auth
 
         [Display(Name = "Запомни ме")]
         public bool RememberMe { get; set; }
+
+        public string RecaptchaResponse { get; set; }
     }
 }
