@@ -34,18 +34,12 @@ namespace KitchEd.Services
             var response = await _httpClient.PostAsync("https://www.google.com/recaptcha/api/siteverify", content);
             var responseString = await response.Content.ReadAsStringAsync();
 
-            // For debugging
-            Console.WriteLine($"reCAPTCHA response: {responseString}");
-
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
 
             var recaptchaResult = JsonSerializer.Deserialize<RecaptchaResponse>(responseString, options);
-
-            // For debugging
-            Console.WriteLine($"Deserialized success value: {recaptchaResult?.Success}");
 
             return recaptchaResult?.Success ?? false;
         }

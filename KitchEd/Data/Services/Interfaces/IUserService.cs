@@ -7,7 +7,6 @@ namespace KitchEd.Data.Services.Interfaces
         Task<IEnumerable<UserViewModel>> GetAllUsers();
         Task<UserViewModel> GetUserById(string id);
         Task<bool> UpdateUser(string id, UserViewModel model);
-        Task<bool> DeleteUser(string id);
         Task<bool> TransferCoursesAndDeleteUser(string userId);
     }
 }

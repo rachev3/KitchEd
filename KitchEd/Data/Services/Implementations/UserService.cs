@@ -89,23 +89,6 @@ namespace KitchEd.Data.Services.Implementations
             return true;
         }
 
-        public async Task<bool> DeleteUser(string id)
-        {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null) return false;
-
-            var roles = await _userManager.GetRolesAsync(user);
-            if (roles.Contains(UserRoles.Chef.ToString()))
-            {
-                // Transfer courses to admin before deletion
-                var adminUser = await _userManager.GetUsersInRoleAsync(UserRoles.Admin.ToString());
-                await _userCourseService.TransferAllCoursesOwnership(user.Id, adminUser.First().Id);
-            }
-
-            var result = await _userManager.DeleteAsync(user);
-            return result.Succeeded;
-        }
-
         public async Task<bool> TransferCoursesAndDeleteUser(string userId)
         {
             var user = await _context.Users.FindAsync(userId);

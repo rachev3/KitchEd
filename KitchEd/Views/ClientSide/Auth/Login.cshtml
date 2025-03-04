@@ -43,8 +43,9 @@
 
                 <div class="mb-3">
                     <div class="g-recaptcha" data-sitekey="@ViewBag.RecaptchaSiteKey"></div>
-                    @if (!ViewData.ModelState.IsValid && ViewData.ModelState[""].Errors.Any(e =>
-                                        e.ErrorMessage.Contains("робот")))
+                    @if (!ViewData.ModelState.IsValid &&
+                                        ViewData.ModelState.ContainsKey("") &&
+                                        ViewData.ModelState[""].Errors.Any(e => e.ErrorMessage.Contains("робот")))
                     {
                         <span class="text-danger">Моля, потвърдете, че не сте робот.</span>
                     }
