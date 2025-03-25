@@ -86,7 +86,6 @@ dotnet run
 
 ## 📁 Project Structure
 
-- `/Areas`: Contains area-specific components
 - `/Controllers`: MVC controllers that handle HTTP requests
 - `/Data`: Database context and data-related services
 - `/Models`: Data models and view models
