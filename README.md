@@ -1,92 +1,102 @@
-# KitchEd - Kitchen Education Platform
+# KitchEd - Online Cooking Education Platform
 
-KitchEd is a web application designed to help users learn cooking skills, discover recipes, and enhance their culinary education.
+KitchEd is a web application built with ASP.NET Core that offers a platform for cooking education where chefs can create courses and students can enroll in them.
 
-## Features
+## 🍳 Features
 
-- Recipe browsing and searching
-- Step-by-step cooking instructions
-- Ingredient management
-- User accounts and personalization
-- [Add any other key features your application has]
+- **User Authentication**: Secure registration and login with role-based access control
+- **Role-Based System**: Supports Admin, Chef, and Student roles
+- **Course Management**: Chefs can create, edit, and manage cooking courses
+- **Course Categorization**: Courses are organized by category, skill level, and dish type
+- **Course Enrollment**: Students can browse and enroll in cooking courses
+- **User Profile Management**: Users can manage their personal profiles
+- **Admin Panel**: Comprehensive administration interface for platform management
 
-## Technology Stack
+## 🛠️ Technology Stack
 
-- **Backend**: ASP.NET Core MVC
-- **Database**: Entity Framework Core with [Your Database Type]
-- **Frontend**: HTML, CSS, JavaScript [Add any frontend frameworks if used]
+- **Framework**: ASP.NET Core 8.0
+- **ORM**: Entity Framework Core
+- **Authentication**: ASP.NET Core Identity
+- **Database**: SQL Server
+- **Frontend**: Razor Pages, HTML, CSS, JavaScript
+- **Styling**: Bootstrap (likely)
+- **Security**: reCAPTCHA integration for form protection
 
-## Getting Started
+## 🏗️ Architecture
+
+The project follows a clean architecture approach:
+
+- **Controllers**: Handle HTTP requests and responses
+- **Models**: Define the data structure
+  - **Entities**: Course, CourseCategory, DishType, SkillLevel, User, UserCourse, CourseImage
+  - **ViewModels**: Used for data transfer between views and controllers
+- **Views**: UI components using Razor syntax
+- **Services**: Business logic implementation
+- **Data**: Database context and data access logic
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- .NET 6.0 SDK or higher
-- [Your Database Type] Server
-- [Any other dependencies]
+- .NET 8.0 SDK
+- SQL Server
+- Visual Studio or Visual Studio Code (recommended)
 
 ### Installation
 
-1. Clone the repository
+1. Clone the repository:
 
-   ```
-   git clone https://github.com/your-username/KitchEd.git
-   ```
+```
+git clone https://github.com/yourusername/KitchEd.git
+```
 
-2. Navigate to the project directory
+2. Navigate to the project directory:
 
-   ```
-   cd KitchEd
-   ```
+```
+cd KitchEd
+```
 
-3. Restore dependencies
+3. Update the connection string in `appsettings.json` to point to your SQL Server instance.
 
-   ```
-   dotnet restore
-   ```
+4. Apply database migrations:
 
-4. Update the connection string in `appsettings.json` to point to your database
+```
+dotnet ef database update
+```
 
-5. Apply database migrations
+5. Run the application:
 
-   ```
-   dotnet ef database update
-   ```
+```
+dotnet run
+```
 
-6. Run the application
+6. Access the application at `https://localhost:5001` or `http://localhost:5000`
 
-   ```
-   dotnet run
-   ```
+## 👥 User Roles
 
-7. Open your browser and navigate to `https://localhost:5001` or `http://localhost:5000`
+- **Admin**: Full access to the platform, can manage all aspects of the system
+- **Chef**: Can create and manage cooking courses
+- **Student**: Can browse and enroll in courses
 
-## Project Structure
+## 🔒 Security Features
 
-- **Controllers/**: Contains MVC controllers that handle HTTP requests
-- **Models/**: Domain models and view models
-- **Views/**: Razor views for rendering HTML
-- **Data/**: Database context and data access logic
-- **Areas/**: Feature-specific sections of the application
-- **wwwroot/**: Static files (CSS, JS, images)
+- Password policy enforcement
+- Role-based authorization
+- reCAPTCHA protection for forms
 
-## Contributing
+## 📁 Project Structure
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+- `/Areas`: Contains area-specific components
+- `/Controllers`: MVC controllers that handle HTTP requests
+- `/Data`: Database context and data-related services
+- `/Models`: Data models and view models
+- `/Views`: UI templates with Razor syntax
+- `/wwwroot`: Static files (CSS, JS, images)
 
-## License
+## 📝 License
 
-[Choose an appropriate license for your project - e.g., MIT, GPL, etc.]
+This project is licensed under the terms of the LICENSE.txt file included in the repository.
 
-## Contact
+---
 
-[Your Name/Team Name] - [Your Email]
-
-Project Link: [https://github.com/your-username/KitchEd](https://github.com/your-username/KitchEd)
-
-## Acknowledgments
-
-- [List any resources, libraries, or people you want to acknowledge]
+_Developed with ❤️ for cooking enthusiasts and educational purposes._
