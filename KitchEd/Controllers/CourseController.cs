@@ -37,7 +37,6 @@ namespace KitchEd.Controllers
             _courseImageService = courseImageService;
         }
 
-        // GET: /Course
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
@@ -51,7 +50,6 @@ namespace KitchEd.Controllers
             return View(courses);
         }
 
-        // GET: /Course/Details/5
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
@@ -62,7 +60,6 @@ namespace KitchEd.Controllers
             return View(details);
         }
 
-        // GET: /Course/Create
         [ChefOnly]
         public async Task<IActionResult> Create()
         {
@@ -77,7 +74,6 @@ namespace KitchEd.Controllers
             });
         }
 
-        // POST: /Course/Create
         [HttpPost]
         [ChefOnly]
         public async Task<IActionResult> Create(CreateCourseViewModel model)
@@ -96,7 +92,6 @@ namespace KitchEd.Controllers
             var userId = _userManager.GetUserId(User);
             var courseId = await _courseService.Create(model, userId);
 
-            // Save additional images
             if (model.AdditionalImageUrls != null && model.AdditionalImageUrls.Count > 0)
             {
                 foreach (var imageUrl in model.AdditionalImageUrls.Where(url => !string.IsNullOrWhiteSpace(url)))
@@ -139,7 +134,6 @@ namespace KitchEd.Controllers
             return View(editModel);
         }
 
-        // POST: /Course/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ChefOnly]
@@ -164,7 +158,6 @@ namespace KitchEd.Controllers
 
             await _courseService.Update(id, model);
 
-            // Save additional images
             if (model.AdditionalImageUrls != null && model.AdditionalImageUrls.Count > 0)
             {
                 foreach (var imageUrl in model.AdditionalImageUrls.Where(url => !string.IsNullOrWhiteSpace(url)))
@@ -181,7 +174,6 @@ namespace KitchEd.Controllers
             return RedirectToAction(nameof(MyCourses));
         }
 
-        // GET: /Course/MyCourses
         [ChefOnly]
         public async Task<IActionResult> MyCourses()
         {
@@ -190,7 +182,6 @@ namespace KitchEd.Controllers
             return View(courses);
         }
 
-        // POST: /Course/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ChefOnly]
@@ -207,7 +198,6 @@ namespace KitchEd.Controllers
             return RedirectToAction(nameof(MyCourses));
         }
 
-        // POST: /Course/DeleteImage/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ChefOnly]
@@ -229,7 +219,6 @@ namespace KitchEd.Controllers
             return Ok();
         }
 
-        // POST: /Course/Enroll/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [StudentOnly]
@@ -267,7 +256,6 @@ namespace KitchEd.Controllers
             return View(enrollments);
         }
 
-        // POST: /Course/ApproveStudent
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ChefOnly]
@@ -285,7 +273,6 @@ namespace KitchEd.Controllers
             return RedirectToAction(nameof(Enrollments), new { courseId = model.CourseId });
         }
 
-        // POST: /Course/RejectStudent
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ChefOnly]
@@ -303,7 +290,6 @@ namespace KitchEd.Controllers
             return RedirectToAction(nameof(Enrollments), new { id = model.CourseId });
         }
 
-        // GET: /Course/MyEnrollments
         [StudentOnly]
         public async Task<IActionResult> MyEnrollments()
         {

@@ -79,7 +79,6 @@ namespace KitchEd.Controllers
 
             if (result.Succeeded)
             {
-                // Assign role
                 var roleResult = await _userManager.AddToRoleAsync(user, model.Role.ToString());
 
                 if (roleResult.Succeeded)

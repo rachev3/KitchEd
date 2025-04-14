@@ -15,7 +15,7 @@ namespace KitchEd.Models.Entities
         public string MainImageUrl { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public CourseStatus CourseStatus { get; set; }     // inactive, active, ongoing, completed
+        public CourseStatus CourseStatus { get; set; }     
 
         public int CourseCategoryId { get; set; }
         [ForeignKey(nameof(CourseCategoryId))]

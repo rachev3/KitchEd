@@ -18,7 +18,6 @@ namespace KitchEd.Data.Services.Implementations
 
         public async Task<UserCourseViewModel> EnrollStudent(CourseDetailsViewModel model, string userId)
         {
-            // Check if student is already enrolled
             var existingEnrollment = await _context.UserCourses
                 .FirstOrDefaultAsync(uc => uc.CourseId == model.CourseId &&
                                          uc.UserId == userId &&
@@ -41,7 +40,6 @@ namespace KitchEd.Data.Services.Implementations
             await _context.UserCourses.AddAsync(enrollment);
             await _context.SaveChangesAsync();
 
-            // Load the related data and return view model
             var enrollmentWithDetails = await _context.UserCourses
                 .Include(uc => uc.User)
                 .Include(uc => uc.Course)
@@ -52,7 +50,6 @@ namespace KitchEd.Data.Services.Implementations
                 .ThenInclude(c => c.SkillLevel)
                 .FirstAsync(uc => uc.UserCourseId == enrollment.UserCourseId);
 
-            //should it return this?
             return MapToViewModel(enrollmentWithDetails);
         }
 

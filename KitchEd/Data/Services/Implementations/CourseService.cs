@@ -24,7 +24,6 @@ namespace KitchEd.Data.Services.Implementations
             _skillLevelService = skillLevelService;
         }
 
-        // Create
         public async Task<int> Create(CreateCourseViewModel model, string chefId)
         {
             var course = new Course
@@ -42,7 +41,6 @@ namespace KitchEd.Data.Services.Implementations
                 SkillLevelId = model.SkillLevelId
             };
 
-            // Add the chef as the course owner
             var userCourse = new UserCourse
             {
                 UserId = chefId,
@@ -59,7 +57,6 @@ namespace KitchEd.Data.Services.Implementations
             return course.CourseId;
         }
 
-        // Read
         public async Task<IEnumerable<CourseViewModel>> GetAll()
         {
             return await _context.Courses
@@ -272,7 +269,6 @@ namespace KitchEd.Data.Services.Implementations
                 })
                 .ToListAsync();
 
-            // Get enrolled students count for each course
             foreach (var course in courses)
             {
                 course.CurrentParticipants = await GetEnrolledStudentsCount(course.CourseId);
@@ -306,7 +302,6 @@ namespace KitchEd.Data.Services.Implementations
                 .ToListAsync();
         }
 
-        // Update
         public async Task<Course> Update(int id, EditCourseViewModel model)
         {
             var course = await _context.Courses.FindAsync(id);
@@ -337,7 +332,6 @@ namespace KitchEd.Data.Services.Implementations
             return true;
         }
 
-        // Delete
         public async Task<bool> Delete(int id)
         {
             var course = await _context.Courses.FindAsync(id);
@@ -348,7 +342,6 @@ namespace KitchEd.Data.Services.Implementations
             return true;
         }
 
-        // Additional operations
         public async Task<bool> IsChefOwner(int courseId, string chefId)
         {
             return await _context.UserCourses

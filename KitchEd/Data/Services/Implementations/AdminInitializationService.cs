@@ -17,12 +17,10 @@ namespace KitchEd.Data.Services.Implementations
 
         public async Task InitializeAdmin()
         {
-            // Check if admin user exists
             var adminUser = await _userManager.FindByNameAsync("admin");
 
             if (adminUser == null)
             {
-                // Create admin user
                 var admin = new User
                 {
                     UserName = "admin",
@@ -36,7 +34,6 @@ namespace KitchEd.Data.Services.Implementations
 
                 if (result.Succeeded)
                 {
-                    // Ensure admin role exists and assign it
                     if (!await _roleManager.RoleExistsAsync(UserRoles.Admin.ToString()))
                     {
                         await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin.ToString()));

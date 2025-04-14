@@ -1,3 +1,36 @@
 ﻿<div class="text-center">
     <h1 class="display-4">Добре дошли в Админ Панел</h1>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success mt-4">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger mt-4">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="card mt-5">
+        <div class="card-header">
+            <h4>Управление на данни</h4>
+        </div>
+        <div class="card-body">
+            <p class="card-text">Използвайте бутона по-долу, за да заредите базата данни с примерни данни.</p>
+            <form asp-controller="AdminPanel" asp-action="Seed" method="post">
+                <button type="submit" class="btn btn-primary"
+                    onclick="return confirm('Сигурни ли сте, че искате да заредите базата данни с примерни данни? Това може да презапише съществуващите данни.');">
+                    Зареди примерни данни
+                </button>
+            </form>
+        </div>
+        <div class="card-footer text-muted">
+            <small>Забележка: Заредените данни включват категории курсове, нива на умения, видове ястия, потребители,
+                курсове и записвания.</small>
+        </div>
+    </div>
 </div>

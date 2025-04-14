@@ -54,7 +54,6 @@ namespace KitchEd.Data.Services.Implementations
             if (string.IsNullOrWhiteSpace(courseCategoryVM.Name))
                 throw new ArgumentException("Course Category Name cannot be empty.");
 
-            // Prevent duplicate names
             bool exists = await _context.CourseCategories.AnyAsync(cc => cc.Name == courseCategoryVM.Name);
             if (exists)
                 throw new InvalidOperationException("A Course Category with the same name already exists.");

@@ -10,9 +10,9 @@ namespace KitchEd.Models.Entities
         public int UserCourseId { get; set; }
 
 
-        public string Role { get; set; } // "Chef" or "Student"
+        public string Role { get; set; } 
         public DateTime SignUpDate { get; set; }
-        public UserCourseStatus Status { get; set; } // "Pending", "Approved", "Rejected"
+        public UserCourseStatus Status { get; set; } 
 
         public string UserId { get; set; }
         [ForeignKey(nameof(UserId))]

@@ -27,7 +27,6 @@ namespace KitchEd.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(DishTypeViewModel dishTypeVM)
         {
             if (!ModelState.IsValid) return View(dishTypeVM);
@@ -60,7 +59,6 @@ namespace KitchEd.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, DishTypeViewModel dishTypeVM)
         {
             if (!ModelState.IsValid) return View(dishTypeVM);

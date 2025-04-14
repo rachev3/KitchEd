@@ -27,7 +27,6 @@ namespace KitchEd.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SkillLevelViewModel skillLevelVM)
         {
             if (!ModelState.IsValid) return View(skillLevelVM);
@@ -60,7 +59,6 @@ namespace KitchEd.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, SkillLevelViewModel skillLevelVM)
         {
             if (!ModelState.IsValid) return View(skillLevelVM);

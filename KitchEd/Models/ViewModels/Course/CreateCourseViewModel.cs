@@ -15,7 +15,6 @@ public class CreateCourseViewModel : CourseViewModel
 
     public override DateTime EndDate { get; set; }
 
-    // Display names for form labels
     [Display(Name = "Заглавие")]
     public override string Title { get; set; } = null!;
 

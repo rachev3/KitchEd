@@ -28,6 +28,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 
 builder.Services.AddScoped<RoleInitializationService>();
 builder.Services.AddScoped<AdminInitializationService>();
+builder.Services.AddScoped<DataSeeder>();
 
 // Register HttpClient and RecaptchaService
 builder.Services.AddHttpClient();
@@ -61,7 +62,7 @@ builder.Services.AddScoped<RecaptchaService>();
 
 var app = builder.Build();
 
-// Initialize Roles and Admin
+// Initialize Roles, Admin, and Seed Data
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -72,11 +73,15 @@ using (var scope = app.Services.CreateScope())
 
         var adminInitializer = services.GetRequiredService<AdminInitializationService>();
         await adminInitializer.InitializeAdmin();
+
+        // Seed database with sample data
+        var dataSeeder = services.GetRequiredService<DataSeeder>();
+        await dataSeeder.SeedAllAsync();
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while initializing roles and admin user.");
+        logger.LogError(ex, "An error occurred while initializing roles, admin user, or seeding data.");
     }
 }
 

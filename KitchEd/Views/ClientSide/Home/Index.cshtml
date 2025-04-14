@@ -62,7 +62,7 @@
                     <div class="col-md-6 text-center">
                         <h3>Започнете обучението си</h3>
                         <p>Разгледайте нашите курсове и започнете своето кулинарно приключение.</p>
-                        <a href="/Courses" class="btn btn-primary">Разгледай курсовете</a>
+                        <a href="/Course" class="btn btn-primary">Разгледай курсовете</a>
                     </div>
                 }
                 @if (User.IsInRole("Chef"))
@@ -70,8 +70,8 @@
                     <div class="col-md-6 text-center">
                         <h3>Управлявайте вашите курсове</h3>
                         <p>Създайте нови курсове или управлявайте съществуващите.</p>
-                        <a href="/Courses/Create" class="btn btn-primary">Създай нов курс</a>
-                        <a href="/Courses/My" class="btn btn-outline-primary">Моите курсове</a>
+                        <a href="/Course/Create" class="btn btn-primary">Създай нов курс</a>
+                        <a href="/Course/MyCourses" class="btn btn-outline-primary">Моите курсове</a>
                     </div>
                 }
             </div>
@@ -89,7 +89,7 @@
         }
         else
         {
-            <a href="/Courses" class="btn btn-primary btn-lg">Разгледай курсовете</a>
+            <a href="/Course" class="btn btn-primary btn-lg">Разгледай курсовете</a>
         }
     </div>
 </div>
